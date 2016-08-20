@@ -1,0 +1,61 @@
+<?php
+/*=============================================
+=            définition des valeurs           =
+=============================================*/
+
+/**
+ *
+ * vetement
+ *
+ */
+
+de 0 a 8 ( 2 valeur iddle )
+
+nombre vetement
+
+
+ $nb_x est strictement compris entre 0 et 2
+
+tableau de vetement = array( "A" => $nb_A,
+                             "B" => $nb_B,
+                             "C" => $nb_C,
+                             "D" => $nb_D);
+
+/**
+ *
+ * température
+ *
+ */
+
+faire une 
+
+
+
+
+/*=====  End of Section comment block  ======*/
+
+
+
+température
+
+
+0 il fait extremment froid
+1 
+2 valeur a température tempéré
+3
+4 il fait extremement froid
+
+
+
+Pour calculer le niveau de vetement : parser le tableau de vetement et compter le nombre de chaque vetement
+
+
+
+
+gestion de la
+
+
+
+array
+
+
