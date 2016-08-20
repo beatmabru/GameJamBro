@@ -40,12 +40,17 @@ public class WeatherVariation : MonoBehaviour
         _COUNT
     }
 
+    void Awake()
+    {
+        instance = this;
+        _forecast = GetComponent<Forecaster>();
+    }
+        
+
     // Use this for initialization
     void Start()
     {
-        _forecast = GetComponent<Forecaster>();
         weatherIndex = WeatherIndex.PERFECT;
-        instance = this;
         GoToRespite();
     }
 

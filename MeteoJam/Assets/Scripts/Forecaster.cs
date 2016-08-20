@@ -7,7 +7,6 @@ public class Forecaster : MonoBehaviour {
     public float flawedUnlockDuration = 60f;
     public float randomUnlockDuration = 90f;
 
-    public uint forecastDelta = 2u;
     public enum Precision
     {
         PRECISE,
@@ -15,11 +14,16 @@ public class Forecaster : MonoBehaviour {
         RANDOM
     }
 
+    void Awake()
+    {
+        _weatherVariation = GetComponent<WeatherVariation>();
+    }
+
     private WeatherVariation.WeatherIndex forecast;
 
     // Use this for initialization
     void Start () {
-        _weatherVariation = GetComponent<WeatherVariation>();
+       
     }
 
     // Update is called once per frame

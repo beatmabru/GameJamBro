@@ -12,7 +12,7 @@ public class PlayerHud : MonoBehaviour
     // Update is called once per frame
     public void UpdateHud (int clothes, float lifePoints)
     {
-        _clothCount.text = clothes + " - " +(int) WeatherVariation.instance.weatherIndex;
+        _clothCount.text = clothes + " / " +(int) WeatherVariation.instance.weatherIndex;
         float newScaleX = lifePoints / 100  ;
         _gauge.transform.localScale = new Vector3(newScaleX, 1, 1);
     }
