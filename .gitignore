@@ -1,2 +1,4 @@
-MeteoJam/Temp/
-MeteoJam/Library/
+MeteoJam/Temp/**
+MeteoJam/Library/**
+MeteoJam/.vs/**	
+MeteoJam/MeteoJam.CSharp.csproj
