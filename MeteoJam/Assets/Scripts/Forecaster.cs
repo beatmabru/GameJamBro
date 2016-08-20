@@ -15,11 +15,16 @@ public class Forecaster : MonoBehaviour {
         RANDOM
     }
 
+    void Awake()
+    {
+        _weatherVariation = GetComponent<WeatherVariation>();
+    }
+
     private WeatherVariation.WeatherIndex forecast;
 
     // Use this for initialization
     void Start () {
-        _weatherVariation = GetComponent<WeatherVariation>();
+       
     }
 
     // Update is called once per frame
