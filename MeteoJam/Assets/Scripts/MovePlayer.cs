@@ -7,6 +7,9 @@ public class MovePlayer : MonoBehaviour
     private Vector2 movement;
     private bool grounded = false;
     private int platformLayer;
+    private int playerIndex ;
+
+    private PlayerManager _playerManager;
 
     void OnGUI()
     {
@@ -16,6 +19,8 @@ public class MovePlayer : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        _playerManager = GetComponent<PlayerManager>();
+        playerIndex = _playerManager.playerIndex;
         _rigidbody = GetComponent<Rigidbody2D>();
         platformLayer = 1 << LayerMask.NameToLayer("Platform");
     }
@@ -25,12 +30,12 @@ public class MovePlayer : MonoBehaviour
     {
         movement = Vector2.zero;
 
-        if (Input.GetAxis("Horizontal") > 0)
+        if (Input.GetAxis("Horizontal"+ playerIndex) > 0)
             movement += Vector2.right;
-        else if (Input.GetAxis("Horizontal") < 0)
+        else if (Input.GetAxis("Horizontal"+ playerIndex) < 0)
             movement += Vector2.left;
 
-        if (Input.GetButtonDown("Fire1") && grounded)
+        if (Input.GetButtonDown("Jump"+ playerIndex) && grounded)
             Jump();
 
         DetectFloor();
