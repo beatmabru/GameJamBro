@@ -28,10 +28,10 @@ public class IngameManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        if(Input.GetButtonDown("ResetGame"))
+        /*if(Input.GetButtonDown("ResetGame"))
         {
             SceneManager.LoadScene("IngameScene");
-        }
+        } */
 
         if (!gameOver)
             gameTime += Time.deltaTime;
@@ -54,6 +54,8 @@ public class IngameManager : MonoBehaviour {
             timerSurviveAlone += Time.deltaTime;
             if(timerSurviveAlone > GameManager.instance.timeSurviveAlone && alivePlayers.Count == 1)
             {
+                alivePlayers[0].GetComponent<PlayerManager>().audioSource.clip = AudioClipManager.instance.GetPlayerWin();
+                alivePlayers[0].GetComponent<PlayerManager>().audioSource.Play();
                 gameOver = true;
                 winText.text = "Congratulations " + alivePlayers[0].name;
                 winText.gameObject.SetActive(true);
