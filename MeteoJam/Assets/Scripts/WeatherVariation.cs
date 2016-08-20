@@ -4,7 +4,10 @@ using UnityEngine.UI;
 
 public class WeatherVariation : MonoBehaviour
 {
-    private WeatherIndex weatherIndex = WeatherIndex.PERFECT;
+    public static WeatherVariation instance;
+
+    [HideInInspector]
+    public WeatherIndex weatherIndex = WeatherIndex.PERFECT;
     public WeatherIndex weatherMax = WeatherIndex.VERY_COLD;
     public Precision precision = Precision.PRECISE;
 
@@ -43,11 +46,13 @@ public class WeatherVariation : MonoBehaviour
         VERY_COLD,
         FREEZING,//locked at start
         ABSOLUTE_ZERO,//locked at start, unlocked after freezing
+        _COUNT
     }
 
     // Use this for initialization
     void Start()
     {
+        instance = this;
         previousWeather = weatherIndex;
 
         GoToRespite();

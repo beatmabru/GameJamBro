@@ -18,7 +18,7 @@ public class GameManager : MonoBehaviour
 
     // Ajout d'une température fixe pour tester la perte
     // de points de vie pour les joueurs
-    public int temperature = 4;
+    //public int temperature = 4;
     public float baseLifepoints = 100f;
     public float baseHeatDamage = 2f;
     public float baseColdDamage = 1f;

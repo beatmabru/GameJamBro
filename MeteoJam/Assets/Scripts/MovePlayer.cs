@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class MovePlayer : MonoBehaviour
 {
@@ -69,10 +70,23 @@ public class MovePlayer : MonoBehaviour
     {
         grounded = false;
 
-        RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, -Vector2.up , 1f);
-        //Debug.DrawLine(transform.position, transform.position - Vector3.up * 1f,Color.red);
+        // Avant : 1 raycast sous le centre du player
+        //RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, -Vector2.up , 1f);
+        // Après : 2 raycasts, pour pouvoir sauter quand on a un pied dans le vide
+        //Debug.DrawLine(transform.position, transform.position - Vector3.up * 1f, Color.red);
 
-        if(hits.Length>0)
+        float playerWidth = _rigidbody.gameObject.GetComponent<BoxCollider2D>().size.x;
+        RaycastHit2D[] hitsLeft = Physics2D.RaycastAll(new Vector2(transform.position.x - 0.45f*playerWidth, transform.position.y), -Vector2.up, 1f);
+        RaycastHit2D[] hitsRight = Physics2D.RaycastAll(new Vector2(transform.position.x + 0.45f*playerWidth, transform.position.y), -Vector2.up, 1f);
+        //        List<RaycastHit2D> hits;
+        RaycastHit2D[] hits = new RaycastHit2D[hitsLeft.Length + hitsRight.Length];
+        hitsLeft.CopyTo(hits, 0);
+        hitsRight.CopyTo(hits, hitsLeft.Length);
+
+        //Debug.DrawLine(new Vector3(transform.position.x - 0.45f * playerWidth, transform.position.y, 0f), new Vector3(transform.position.x - 0.45f * playerWidth, transform.position.y, 0f) - Vector3.up * 1f, Color.red);
+        //Debug.DrawLine(new Vector3(transform.position.x + 0.45f * playerWidth, transform.position.y, 0f), new Vector3(transform.position.x + 0.45f * playerWidth, transform.position.y, 0f) - Vector3.up * 1f, Color.red);
+
+        if (hits.Length>0)
         {
             foreach (RaycastHit2D hit in hits)
             {
