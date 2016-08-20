@@ -8,6 +8,8 @@ public class MovePlayer : MonoBehaviour
     private bool grounded = false;
     private int platformLayer;
     private int playerIndex ;
+    [HideInInspector]
+    public bool isFacingRight = true;
 
     private PlayerManager _playerManager;
 
@@ -31,9 +33,17 @@ public class MovePlayer : MonoBehaviour
         movement = Vector2.zero;
 
         if (Input.GetAxis("Horizontal"+ playerIndex) > 0)
+        {
             movement += Vector2.right;
+            transform.localScale = Vector3.one;
+            isFacingRight = true;
+        }
         else if (Input.GetAxis("Horizontal"+ playerIndex) < 0)
+        {
             movement += Vector2.left;
+            transform.localScale = new Vector3(-1,1,1);
+            isFacingRight = false;
+        }
 
         if (Input.GetButtonDown("Jump"+ playerIndex) && grounded)
             Jump();
@@ -66,5 +76,14 @@ public class MovePlayer : MonoBehaviour
         {
             grounded = true;
         }
+    }
+    public void PlayerIsPushed(bool pushRight)
+    {
+        Vector2 pushOrientation = GameManager.instance.pushPlayerOrientation;
+
+        if (!pushRight)
+            pushOrientation.x *= -1;
+
+        _rigidbody.AddForce(pushOrientation * GameManager.instance.pushPlayerForce, ForceMode2D.Impulse);
     }
 }

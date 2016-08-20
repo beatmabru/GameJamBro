@@ -5,23 +5,31 @@ using System.Collections.Generic;
 public class PlayerManager: MonoBehaviour {
 
     public List<Clothes> clothesList;
+    private GameObject _attackHitbox;
     private float lifePoints = 100f;
 
     public PlayerHud hud;
+    [HideInInspector]
+    public MovePlayer movePlayer;
     public int playerIndex = 0;
+
 
     // Use this for initialization
     void Start () {
+        _attackHitbox = transform.Find("HitBoxAttack").gameObject;
+        movePlayer = GetComponentInParent<MovePlayer>();
         SetFirstClothes();
     }
-	
-	// Update is called once per frame
-	void Update () {
+
+    // Update is called once per frame
+    void Update()
+    {
         UpdateHud();
 
-        if (Input.GetButtonDown("Throw" + playerIndex)) {
+        if (Input.GetButtonDown("Throw" + playerIndex))
             ThrowClothes();
-        }
+        if (Input.GetButtonDown("Push" + playerIndex))
+            LaunchAttack();
     }
 
     void SetFirstClothes()
@@ -65,5 +73,16 @@ public class PlayerManager: MonoBehaviour {
         clothesList.Remove(clothes);
 
         return clothes;
+    }
+
+    void LaunchAttack()
+    {
+        _attackHitbox.SetActive(true);
+    }
+
+
+    public void PushPlayer(PlayerManager pushedPlayer)
+    {
+        pushedPlayer.movePlayer.PlayerIsPushed(movePlayer.isFacingRight);
     }
 }
