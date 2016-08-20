@@ -4,9 +4,9 @@ using UnityEngine.UI;
 
 public class WeatherVariation : MonoBehaviour
 {
-    private WeatherIndex weatherIndex = WeatherIndex.PERFECT;
+    private Forecaster _forecast;
+    public WeatherIndex weatherIndex = WeatherIndex.PERFECT;
     public WeatherIndex weatherMax = WeatherIndex.VERY_COLD;
-    public Precision precision = Precision.PRECISE;
 
     public enum State
     {
@@ -22,15 +22,6 @@ public class WeatherVariation : MonoBehaviour
     public float absoluteZeroUnlockDuration = 90f;
 
     public uint weatherDelta = 2u;
-    
-    private WeatherIndex previousWeather = WeatherIndex.PERFECT;
-
-    public enum Precision
-    {
-        PRECISE,
-        FLAWED,
-        RANDOMISH
-    }
 
     public enum WeatherIndex
     {
@@ -48,13 +39,13 @@ public class WeatherVariation : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        previousWeather = weatherIndex;
-
+        _forecast = GetComponent<Forecaster>();
+        weatherIndex = WeatherIndex.PERFECT;
         GoToRespite();
     }
-	
-	// Update is called once per frame
-	void Update()
+
+    // Update is called once per frame
+    void Update()
     {
         TryUnlock();
 
@@ -63,16 +54,18 @@ public class WeatherVariation : MonoBehaviour
         {
             ChangeState();
         }
+//         PickNextWeather();
+//         Debug.Log("Current Weather:" + (int)weatherIndex);
     }
 
     private void ChangeState()
     {
-        if(state==State.RESPITE)
+        if (state == State.RESPITE)
         {
             state = State.WEATHER;
             duration = weatherDuration;
         }
-        else if(state == State.WEATHER)
+        else if (state == State.WEATHER)
         {
             GoToRespite();
         }
@@ -84,7 +77,7 @@ public class WeatherVariation : MonoBehaviour
     {
         state = State.RESPITE;
         duration = respiteDuration;
-        DrawNextWeather();
+        PickNextWeather();
     }
 
     void OnGUI()
@@ -111,29 +104,27 @@ public class WeatherVariation : MonoBehaviour
     }
 
     //Draw a WeatherIndex and apply WeatherPrecision on it
-    void DrawNextWeather()
+    void PickNextWeather()
     {
         //"real" pick before forecast variation
         WeatherIndex firstPick;
-        do
-        {
-            firstPick = weatherIndex;
-            bool positive = true;
-            if (weatherIndex == weatherMax)
-                positive = false;
-            else if(weatherIndex != WeatherIndex.HEATWAVE)
-                positive = Random.Range(0, 2) == 0;
 
-            int delta = weatherDelta == 0u ? 0 : (Random.Range(0, (int)weatherDelta) + 1);
-            
-            if (positive)
-                firstPick = (WeatherIndex)Mathf.Min((int)weatherIndex + delta, (int)weatherMax);
-            else
-                firstPick = (WeatherIndex)Mathf.Max((int)weatherIndex - delta, (int)WeatherIndex.HEATWAVE);
-        } //ignore the previous value
-        while (firstPick == previousWeather);
+        firstPick = weatherIndex;
+        bool positive = true;
+        if (weatherIndex == weatherMax)
+            positive = false;
+        else if (weatherIndex != WeatherIndex.HEATWAVE)
+            positive = Random.Range(0, 2) == 0;
 
-        previousWeather = weatherIndex;
+        int delta = weatherDelta == 0u ? 0 : (Random.Range(0, (int)weatherDelta) + 1);
+
+        if (positive)
+            firstPick = (WeatherIndex)Mathf.Min((int)weatherIndex + delta, (int)weatherMax);
+        else
+            firstPick = (WeatherIndex)Mathf.Max((int)weatherIndex - delta, (int)WeatherIndex.HEATWAVE);
+
         weatherIndex = firstPick;
+
+        _forecast.ComputeForecast();
     }
 }
