@@ -78,6 +78,7 @@
     <Compile Include="Assets\Scripts\Attack.cs" />
     <Compile Include="Assets\Scripts\Clothes.cs" />
     <Compile Include="Assets\Scripts\ClothesDetection.cs" />
+    <Compile Include="Assets\Scripts\ClothesManager.cs" />
     <Compile Include="Assets\Scripts\GameManager.cs" />
     <Compile Include="Assets\Scripts\IngameManager.cs" />
     <Compile Include="Assets\Scripts\MainMenuManager.cs" />

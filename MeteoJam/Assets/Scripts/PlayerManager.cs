@@ -55,8 +55,8 @@ public class PlayerManager: MonoBehaviour {
 
     void SetFirstClothes()
     {
-        AddClothesToPlayerList(PickClothesFromList(GameManager.instance.gameClothes));
-        AddClothesToPlayerList(PickClothesFromList(GameManager.instance.gameClothes));
+        AddClothesToPlayerList(PickClothesFromList(ClothesManager.instance.gameClothes));
+        AddClothesToPlayerList(PickClothesFromList(ClothesManager.instance.gameClothes));
     }
 
     void UpdateHud()

@@ -26,7 +26,7 @@ public class GameManager : MonoBehaviour
 
     
 
-    public List<Clothes> gameClothes;
+    //public List<Clothes> gameClothes;
 
     void Awake()
     {
@@ -36,11 +36,13 @@ public class GameManager : MonoBehaviour
 
 	// Use this for initialization
 	void Start () {
-        // Commenter si on utilise la scène "Main"
-        if(SceneManager.GetActiveScene().name != "Main")
+        /*if(SceneManager.GetActiveScene().name != "Main")
         {
-            SceneManager.LoadScene("MainMenuScene", LoadSceneMode.Single);
-        }
+            // Prod mode
+            //SceneManager.LoadScene("MainMenuScene", LoadSceneMode.Single);
+            // Test mode
+            //SceneManager.LoadScene("IngameScene", LoadSceneMode.Single);
+        }*/
            
 	}
 
