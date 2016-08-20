@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 //script on Clothes
 public class ClothesDetection : MonoBehaviour {
@@ -7,11 +8,15 @@ public class ClothesDetection : MonoBehaviour {
     private Clothes _clothes;
 
     [HideInInspector]
-    public PlayerManager playerThrower;
+    public List<PlayerManager> ignoredPlayers = new List<PlayerManager>();
+
+    private BoxCollider2D _hitbox;
 
     // Use this for initialization
-    void Start () {
+    void Start ()
+    {
         _clothes = GetComponentInParent<Clothes>();
+        _hitbox = GetComponent<BoxCollider2D>();
     }
 
     public void SetUndetectablePlayer(PlayerManager playerManager)
@@ -19,9 +24,14 @@ public class ClothesDetection : MonoBehaviour {
         StartCoroutine(UndetectableCoroutine(playerManager));
     }
 
+    public void DisableOnPush()
+    {
+        StartCoroutine(DisableCoroutine());
+    }
+
     IEnumerator UndetectableCoroutine(PlayerManager playerManager)
     {
-        playerThrower = playerManager;
+        ignoredPlayers.Add(playerManager);
 
         float delay = 0.3f;
 
@@ -31,13 +41,27 @@ public class ClothesDetection : MonoBehaviour {
             yield return 0;
         }
 
-        playerThrower = null;
+        ResetUndetectable();
+    }
+
+    IEnumerator DisableCoroutine()
+    {
+        _hitbox.enabled = false;
+
+        float delay = 0.5f;
+
+        while (delay > 0)
+        {
+            delay -= Time.deltaTime;
+            yield return 0;
+        }
+
+        _hitbox.enabled = true;
     }
 
     public void ResetUndetectable()
     {
-        StopAllCoroutines();
-        playerThrower = null;
+        ignoredPlayers = new List<PlayerManager>();
     }
 
     void OnTriggerEnter2D(Collider2D col)
@@ -46,7 +70,7 @@ public class ClothesDetection : MonoBehaviour {
         {
             PlayerManager playerManager = col.GetComponent<PlayerManager>();
 
-            if (playerManager != playerThrower)
+            if (ignoredPlayers.IndexOf(playerManager) != 0)
                 playerManager.AddClothesToPlayerList(_clothes);
         }
     }

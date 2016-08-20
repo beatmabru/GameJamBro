@@ -24,7 +24,6 @@ public class Attack : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D col)
     {
-        Debug.Log(col.gameObject.name);
         if(col.tag == "Player")
         {
             _attacker.PushPlayer(col.GetComponent<PlayerManager>());

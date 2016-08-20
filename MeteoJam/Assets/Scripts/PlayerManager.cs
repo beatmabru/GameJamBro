@@ -26,8 +26,12 @@ public class PlayerManager: MonoBehaviour {
     {
         UpdateHud();
 
-        if (Input.GetButtonDown("Throw" + playerIndex))
-            ThrowClothes();
+        if (Input.GetButtonDown("Throw" + playerIndex) && clothesList.Count > 0) {
+            Clothes thrownClothes = PickClothesFromList(clothesList);
+            Vector2 throwOrientation = new Vector2(Input.GetAxis("Horizontal" + playerIndex), Input.GetAxis("Vertical" + playerIndex));
+            ClothesFly(thrownClothes,throwOrientation, GameManager.instance.throwForce,true);
+        }
+            
         if (Input.GetButtonDown("Push" + playerIndex))
             LaunchAttack();
     }
@@ -43,24 +47,28 @@ public class PlayerManager: MonoBehaviour {
         hud.UpdateHud(clothesList.Count);
     }
 
-    void ThrowClothes()
+    void ClothesFly(Clothes thrownClothes, Vector2 throwOrientation, float force,bool isFacingRight)
     {
-        if(clothesList.Count > 0)
-        {
-            Clothes thrownClothes = PickClothesFromList(clothesList);
-            thrownClothes.transform.position = transform.position;
-            thrownClothes.gameObject.SetActive(true);
+        Vector2 orientation = throwOrientation;
 
-            Vector2 throwOrientation = new Vector2(Input.GetAxis("Horizontal" + playerIndex), Input.GetAxis("Vertical" + playerIndex));
-            thrownClothes.transform.SetParent(null);
-            thrownClothes.Throw(throwOrientation,this);
-        }
+        if (!isFacingRight)
+            orientation.x *= -1;
+
+        //Clothes thrownClothes = PickClothesFromList(clothesList);
+        thrownClothes.transform.position = transform.position;
+        thrownClothes.gameObject.SetActive(true);
+
+        //Vector2 throwOrientation = new Vector2(Input.GetAxis("Horizontal" + playerIndex), Input.GetAxis("Vertical" + playerIndex));
+        thrownClothes.transform.SetParent(null);
+        thrownClothes.transform.localScale = Vector3.one;
+        thrownClothes.Throw(orientation, force, this);
     }
 
     // Ajoute un vêtement à la liste du Player
     public void AddClothesToPlayerList(Clothes clothes)
     {
         clothes.transform.SetParent(transform);
+        clothes.transform.localScale = Vector3.one;
         clothes.ResetUndetectable();
         clothes.gameObject.SetActive(false);
         clothesList.Add(clothes);
@@ -68,11 +76,15 @@ public class PlayerManager: MonoBehaviour {
 
     Clothes PickClothesFromList(List<Clothes> clothesList)
     {
-        int clothesIndex = Random.Range(0, clothesList.Count - 1);
-        Clothes clothes = clothesList[clothesIndex];
-        clothesList.Remove(clothes);
+        if(clothesList.Count > 0)
+        {
+            int clothesIndex = Random.Range(0, clothesList.Count - 1);
+            Clothes clothes = clothesList[clothesIndex];
+            clothesList.Remove(clothes);
+            return clothes;
+        }
 
-        return clothes;
+        return null ;
     }
 
     void LaunchAttack()
@@ -84,5 +96,16 @@ public class PlayerManager: MonoBehaviour {
     public void PushPlayer(PlayerManager pushedPlayer)
     {
         pushedPlayer.movePlayer.PlayerIsPushed(movePlayer.isFacingRight);
+        EjectClothesOnPush(pushedPlayer);
+    }
+
+    public void EjectClothesOnPush(PlayerManager pushedPlayer)
+    {
+        Clothes clothesLost = PickClothesFromList(pushedPlayer.clothesList);
+        if (clothesLost)
+        {
+            pushedPlayer.ClothesFly(clothesLost, GameManager.instance.pushClothesOrientation,GameManager.instance.pushClothesForce,movePlayer.isFacingRight);
+            clothesLost.DisableOnPush();
+        }
     }
 }
