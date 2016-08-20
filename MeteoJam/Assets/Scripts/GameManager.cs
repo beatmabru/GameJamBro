@@ -24,7 +24,7 @@ public class GameManager : MonoBehaviour
     public float baseColdDamage = 1f;
     public float baseRegen = 3f;
 
-    
+    public float timeSurviveAlone = 3f;
 
     //public List<Clothes> gameClothes;
 

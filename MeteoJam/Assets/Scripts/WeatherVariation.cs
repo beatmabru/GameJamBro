@@ -99,13 +99,13 @@ public class WeatherVariation : MonoBehaviour
         if (weatherMax == WeatherIndex.ABSOLUTE_ZERO)
             return;
 
-        if (Time.realtimeSinceStartup >= absoluteZeroUnlockDuration)
+        if (IngameManager.instance.gameTime >= absoluteZeroUnlockDuration)
         {
             weatherMax = WeatherIndex.ABSOLUTE_ZERO;
             return;
         }
 
-        if (weatherMax != WeatherIndex.FREEZING && Time.realtimeSinceStartup >= freezingUnlockDuration)
+        if (weatherMax != WeatherIndex.FREEZING && IngameManager.instance.gameTime >= freezingUnlockDuration)
             weatherMax = WeatherIndex.FREEZING;
     }
 
