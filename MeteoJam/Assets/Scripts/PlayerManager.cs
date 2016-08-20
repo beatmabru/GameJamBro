@@ -2,7 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class PlayerManager: MonoBehaviour {
+public class PlayerManager: MonoBehaviour, EventDispatcher.IEventListener
+{
 
     public List<Clothes> clothesList;
     private GameObject _attackHitbox;
@@ -22,6 +23,7 @@ public class PlayerManager: MonoBehaviour {
     // Use this for initialization
     void Start () {
         _attackHitbox = transform.Find("HitBoxAttack").gameObject;
+        EventDispatcher.instance.listeners.Add(this);
         movePlayer = GetComponentInParent<MovePlayer>();
         SetFirstClothes();
         lifePoints = GameManager.instance.baseLifepoints;
@@ -37,6 +39,8 @@ public class PlayerManager: MonoBehaviour {
         // Throw : lancer un vêtement
         if (Input.GetButtonDown("Throw" + playerIndex) && clothesList.Count > 0 && canThrow) {
             Clothes thrownClothes = PickClothesFromList(clothesList);
+            EventDispatcher.Event throwClothes = new EventDispatcher.Event(EventDispatcher.EventId.CLOTHES_THROW, this);
+            EventDispatcher.instance.ThrowEvent(throwClothes);
             Vector2 throwOrientation = new Vector2(Input.GetAxis("Horizontal" + playerIndex), Input.GetAxis("Vertical" + playerIndex));
             ClothesFly(thrownClothes,throwOrientation, GameManager.instance.throwForce,true);
         }
@@ -57,6 +61,7 @@ public class PlayerManager: MonoBehaviour {
     {
         AddClothesToPlayerList(PickClothesFromList(ClothesManager.instance.gameClothes));
         AddClothesToPlayerList(PickClothesFromList(ClothesManager.instance.gameClothes));
+        hud.changeColor(clothesList.Count);
     }
 
     void UpdateHud()
@@ -91,6 +96,9 @@ public class PlayerManager: MonoBehaviour {
         clothes.ResetUndetectable();
         clothes.gameObject.SetActive(false);
         clothesList.Add(clothes);
+
+        EventDispatcher.Event getClothes = new EventDispatcher.Event(EventDispatcher.EventId.CLOTHES_GET, null);
+        EventDispatcher.instance.ThrowEvent(getClothes);
     }
 
     Clothes PickClothesFromList(List<Clothes> clothesList)
@@ -147,6 +155,7 @@ public class PlayerManager: MonoBehaviour {
         }
         gameObject.SetActive(false);
         hud.gameObject.SetActive(false);
+        EventDispatcher.instance.listeners.Remove(this);
     }
 
     public void PushPlayer(PlayerManager pushedPlayer)
@@ -162,6 +171,8 @@ public class PlayerManager: MonoBehaviour {
         {
             pushedPlayer.ClothesFly(clothesLost, GameManager.instance.pushClothesOrientation,GameManager.instance.pushClothesForce,movePlayer.isFacingRight);
             clothesLost.DisableOnPush();
+            EventDispatcher.Event throwClothes = new EventDispatcher.Event(EventDispatcher.EventId.CLOTHES_THROW, (object)pushedPlayer);
+            EventDispatcher.instance.ThrowEvent(throwClothes);
         }
     }
 
@@ -200,5 +211,22 @@ public class PlayerManager: MonoBehaviour {
     public void StartThrowCooldown()
     {
         StartCoroutine(StartCooldownThrowCoroutine());
+    }
+
+    public bool HandleEvent(EventDispatcher.Event e)
+    {
+        if( e.id == EventDispatcher.EventId.WEATHER_RESPITE_CHANGE )
+        {
+            hud.changeColor(clothesList.Count);
+        }
+        else if (e.id == EventDispatcher.EventId.CLOTHES_THROW || e.id == EventDispatcher.EventId.CLOTHES_GET )
+        {
+            if( (PlayerManager) e.data == this )
+            {
+                hud.changeColor(clothesList.Count);
+            }
+        }
+
+        return false;
     }
 }

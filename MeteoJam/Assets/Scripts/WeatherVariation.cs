@@ -76,6 +76,9 @@ public class WeatherVariation : MonoBehaviour
             GoToRespite();
         }
 
+        EventDispatcher.Event weatherChange = new EventDispatcher.Event(EventDispatcher.EventId.WEATHER_RESPITE_CHANGE, (object)state);
+        EventDispatcher.instance.ThrowEvent(weatherChange);
+
         Debug.Assert(duration > 0f);
     }
 
