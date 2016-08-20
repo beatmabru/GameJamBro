@@ -43,9 +43,9 @@ public class WeatherVariation : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        instance = this;
         _forecast = GetComponent<Forecaster>();
         weatherIndex = WeatherIndex.PERFECT;
-        instance = this;
         GoToRespite();
     }
 

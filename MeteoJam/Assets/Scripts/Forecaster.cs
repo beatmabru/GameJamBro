@@ -7,7 +7,6 @@ public class Forecaster : MonoBehaviour {
     public float flawedUnlockDuration = 60f;
     public float randomUnlockDuration = 90f;
 
-    public uint forecastDelta = 2u;
     public enum Precision
     {
         PRECISE,

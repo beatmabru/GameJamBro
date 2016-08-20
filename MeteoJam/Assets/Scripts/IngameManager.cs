@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class IngameManager : MonoBehaviour {
 
@@ -27,7 +28,12 @@ public class IngameManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        if(!gameOver)
+        if(Input.GetButtonDown("ResetGame"))
+        {
+            SceneManager.LoadScene("IngameScene");
+        }
+
+        if (!gameOver)
             gameTime += Time.deltaTime;
         // Vérification du nombre d ejoueurs en vie
         //int deathCount = 0;
