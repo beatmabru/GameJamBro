@@ -14,6 +14,7 @@ public class PlayerManager: MonoBehaviour {
     public MovePlayer movePlayer;
     public int playerIndex = 0;
     private bool canPush = true;
+    private bool canThrow = true;
 
 
     // Use this for initialization
@@ -28,7 +29,7 @@ public class PlayerManager: MonoBehaviour {
     {
         UpdateHud();
 
-        if (Input.GetButtonDown("Throw" + playerIndex) && clothesList.Count > 0) {
+        if (Input.GetButtonDown("Throw" + playerIndex) && clothesList.Count > 0 && canThrow) {
             Clothes thrownClothes = PickClothesFromList(clothesList);
             Vector2 throwOrientation = new Vector2(Input.GetAxis("Horizontal" + playerIndex), Input.GetAxis("Vertical" + playerIndex));
             ClothesFly(thrownClothes,throwOrientation, GameManager.instance.throwForce,true);
@@ -37,7 +38,7 @@ public class PlayerManager: MonoBehaviour {
         if (Input.GetButtonDown("Push" + playerIndex) && canPush)
         {
             LaunchAttack();
-            StartCoroutine(PushCooldownCoroutine());
+            StartCoroutine(StartCooldownPushCoroutine());
         }
     }
 
@@ -114,7 +115,10 @@ public class PlayerManager: MonoBehaviour {
         }
     }
 
-    IEnumerator PushCooldownCoroutine()
+    // FIXME : on ne peut pas passer le bool en paramètre (sinon, c'est
+    // le paramètre qui est modifié, et pas le flag du PlayerManager)
+    // Pour le moment, on duplique les coroutines pour les deux flags...
+    IEnumerator StartCooldownPushCoroutine()
     {
         canPush = false;
 
@@ -127,5 +131,24 @@ public class PlayerManager: MonoBehaviour {
         }
 
         canPush = true;
+    }
+    IEnumerator StartCooldownThrowCoroutine()
+    {
+        canThrow = false;
+
+        float delay = GameManager.instance.pushCooldown;
+
+        while (delay > 0)
+        {
+            delay -= Time.deltaTime;
+            yield return 0;
+        }
+
+        canThrow = true;
+    }
+
+    public void StartThrowCooldown()
+    {
+        StartCoroutine(StartCooldownThrowCoroutine());
     }
 }
