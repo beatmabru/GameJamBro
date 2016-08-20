@@ -8,8 +8,13 @@ public class GameManager : MonoBehaviour
     public float jumpForce = 4.0f;
     public float playerSpeed = 4.0f;
     public float throwForce = 4.0f;
-    public float pushForce = 4.0f;
+    public float pushPlayerForce = 4.0f;
+    public float pushClothesForce = 4.0f;
     public float distanceMinBeforeDetection = 1.0f;
+    public float pushCooldown = 0.5f;
+    public float throwCooldown = 0.5f;
+    public Vector2 pushPlayerOrientation = Vector2.right;
+    public Vector2 pushClothesOrientation = Vector2.right;
 
     public List<Clothes> gameClothes;
 

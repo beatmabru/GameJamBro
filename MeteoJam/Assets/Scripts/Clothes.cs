@@ -25,15 +25,25 @@ public class Clothes : MonoBehaviour {
     }
 	
 
-    public void Throw(Vector2 force, PlayerManager playerManager)
+    public void Throw(Vector2 orientation, float force, PlayerManager playerManager)
     {
         _clothesDetection.SetUndetectablePlayer(playerManager);
-        _rigidBody.AddForce(force * GameManager.instance.throwForce, ForceMode2D.Impulse);
+        _rigidBody.AddForce(orientation * force, ForceMode2D.Impulse);
+    }
+
+    public void SetUndetectablePlayer(PlayerManager playerManager)
+    {
+        _clothesDetection.SetUndetectablePlayer(playerManager);
     }
 
     public void ResetUndetectable()
     {
         _clothesDetection.ResetUndetectable();
+    }
+
+    public void DisableOnPush()
+    {
+        _clothesDetection.DisableOnPush();
     }
 
 

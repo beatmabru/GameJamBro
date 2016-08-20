@@ -6,8 +6,9 @@ public class MovePlayer : MonoBehaviour
     private Rigidbody2D _rigidbody;
     private Vector2 movement;
     private bool grounded = false;
-    private int platformLayer;
     private int playerIndex ;
+    [HideInInspector]
+    public bool isFacingRight = true;
 
     private PlayerManager _playerManager;
 
@@ -22,7 +23,6 @@ public class MovePlayer : MonoBehaviour
         _playerManager = GetComponent<PlayerManager>();
         playerIndex = _playerManager.playerIndex;
         _rigidbody = GetComponent<Rigidbody2D>();
-        platformLayer = 1 << LayerMask.NameToLayer("Platform");
     }
 
     // Update is called once per frame
@@ -31,9 +31,17 @@ public class MovePlayer : MonoBehaviour
         movement = Vector2.zero;
 
         if (Input.GetAxis("Horizontal"+ playerIndex) > 0)
+        {
             movement += Vector2.right;
+            transform.localScale = Vector3.one;
+            isFacingRight = true;
+        }
         else if (Input.GetAxis("Horizontal"+ playerIndex) < 0)
+        {
             movement += Vector2.left;
+            transform.localScale = new Vector3(-1,1,1);
+            isFacingRight = false;
+        }
 
         if (Input.GetButtonDown("Jump"+ playerIndex) && grounded)
             Jump();
@@ -60,11 +68,28 @@ public class MovePlayer : MonoBehaviour
     {
         grounded = false;
 
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, -Vector2.up , 0.5f, platformLayer);
-        Debug.DrawLine(transform.position, transform.position - Vector3.up * 0.5f,Color.red);
-        if (hit.collider != null)
+        RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, -Vector2.up , 1f);
+        //Debug.DrawLine(transform.position, transform.position - Vector3.up * 1f,Color.red);
+
+        if(hits.Length>0)
         {
-            grounded = true;
+            foreach (RaycastHit2D hit in hits)
+            {
+                if (hit.collider.tag == "Platform")
+                    grounded = true;
+                else if (hit.collider.tag == "Player" && hit.collider.GetComponent<PlayerManager>() != _playerManager)
+                    grounded = true;
+            }
         }
+    }
+
+    public void PlayerIsPushed(bool pushRight)
+    {
+        Vector2 pushOrientation = GameManager.instance.pushPlayerOrientation;
+
+        if (!pushRight)
+            pushOrientation.x *= -1;
+
+        _rigidbody.AddForce(pushOrientation * GameManager.instance.pushPlayerForce, ForceMode2D.Impulse);
     }
 }
