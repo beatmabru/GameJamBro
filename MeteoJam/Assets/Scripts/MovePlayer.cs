@@ -29,6 +29,7 @@ public class MovePlayer : MonoBehaviour
     void Update()
     {
         movement = Vector2.zero;
+        if (_playerManager.deathTriggered) return;
 
         if (Input.GetAxis("Horizontal"+ playerIndex) > 0)
         {

@@ -15,6 +15,8 @@ public class PlayerManager: MonoBehaviour {
     public int playerIndex = 0;
     private bool canPush = true;
     private bool canThrow = true;
+    [HideInInspector]
+    public bool deathTriggered = false ;
 
 
     // Use this for initialization
@@ -65,7 +67,9 @@ public class PlayerManager: MonoBehaviour {
         Vector2 orientation = throwOrientation;
 
         if (!isFacingRight)
+        {
             orientation.x *= -1;
+        }
 
         //Clothes thrownClothes = PickClothesFromList(clothesList);
         thrownClothes.transform.position = transform.position;
@@ -124,15 +128,24 @@ public class PlayerManager: MonoBehaviour {
             lifePoints = Mathf.Max(0, lifePoints - damage);
         }
 
-        if (lifePoints == 0)
+        if (lifePoints == 0 && !deathTriggered)
         {
-            Die();
+            StartCoroutine(Die());
         }
     }
 
-    void Die()
+    IEnumerator Die()
     {
         // TODO
+        deathTriggered = true;
+        for (int i = 0; i < clothesList.Count; i++)
+        {
+            Clothes clothes = clothesList[i];
+            ClothesFly(clothes, GameManager.instance.pushClothesOrientation, GameManager.instance.pushClothesForce,(i%2 == 0));
+            yield return new WaitForSeconds(0.2f);
+        }
+        gameObject.SetActive(false);
+        hud.gameObject.SetActive(false);
     }
 
     public void PushPlayer(PlayerManager pushedPlayer)
