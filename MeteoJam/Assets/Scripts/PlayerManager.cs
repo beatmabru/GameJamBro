@@ -6,12 +6,14 @@ public class PlayerManager: MonoBehaviour {
 
     public List<Clothes> clothesList;
     private GameObject _attackHitbox;
+    [SerializeField]
     private float lifePoints = 100f;
 
     public PlayerHud hud;
     [HideInInspector]
     public MovePlayer movePlayer;
     public int playerIndex = 0;
+    private bool canPush = true;
 
 
     // Use this for initialization
@@ -32,8 +34,11 @@ public class PlayerManager: MonoBehaviour {
             ClothesFly(thrownClothes,throwOrientation, GameManager.instance.throwForce,true);
         }
             
-        if (Input.GetButtonDown("Push" + playerIndex))
+        if (Input.GetButtonDown("Push" + playerIndex) && canPush)
+        {
             LaunchAttack();
+            StartCoroutine(PushCooldownCoroutine());
+        }
     }
 
     void SetFirstClothes()
@@ -44,7 +49,7 @@ public class PlayerManager: MonoBehaviour {
 
     void UpdateHud()
     {
-        hud.UpdateHud(clothesList.Count);
+        hud.UpdateHud(clothesList.Count, lifePoints);
     }
 
     void ClothesFly(Clothes thrownClothes, Vector2 throwOrientation, float force,bool isFacingRight)
@@ -107,5 +112,20 @@ public class PlayerManager: MonoBehaviour {
             pushedPlayer.ClothesFly(clothesLost, GameManager.instance.pushClothesOrientation,GameManager.instance.pushClothesForce,movePlayer.isFacingRight);
             clothesLost.DisableOnPush();
         }
+    }
+
+    IEnumerator PushCooldownCoroutine()
+    {
+        canPush = false;
+
+        float delay = GameManager.instance.pushCooldown;
+
+        while (delay > 0)
+        {
+            delay -= Time.deltaTime;
+            yield return 0;
+        }
+
+        canPush = true;
     }
 }
