@@ -1,11 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class Forecaster : MonoBehaviour {
     private WeatherVariation _weatherVariation;
     public Precision precision = Precision.PRECISE;
     public float flawedUnlockDuration = 60f;
     public float randomUnlockDuration = 90f;
+    public Text forecastText;
 
     public enum Precision
     {
@@ -31,10 +33,12 @@ public class Forecaster : MonoBehaviour {
         TryUnlock();
     }
 
+    /*
     void OnGUI()
     {
         GUI.Label(new Rect(10, 50, 200, 20), "Current Forecast:" + forecast.ToString());
     }
+    */
 
     public void ComputeForecast()
     {
@@ -65,6 +69,8 @@ public class Forecaster : MonoBehaviour {
             default:
                 break;
         }
+        
+        forecastText.text = "The incoming weather is : " + forecast;
     }
 
     private WeatherVariation.WeatherIndex VariationWeather(int min, int max)

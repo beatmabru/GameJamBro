@@ -115,6 +115,9 @@ public class PlayerManager: MonoBehaviour {
     // (pour l'instant, simple delta à chaque frame)
     void UpdateLifepoints()
     {
+        // Si période d'accalmie, la vie ne bouge pas.
+        //if (WeatherVariation.instance.state == WeatherVariation.State.RESPITE) return; 
+
         int temperature = (int) WeatherVariation.instance.weatherIndex;
         int ecartTemperatureVetement = Mathf.Abs(temperature - clothesList.Count);
         float facteurDegats = temperature > 3 ? GameManager.instance.baseHeatDamage : GameManager.instance.baseColdDamage;

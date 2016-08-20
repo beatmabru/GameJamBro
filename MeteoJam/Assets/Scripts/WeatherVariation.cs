@@ -6,6 +6,7 @@ public class WeatherVariation : MonoBehaviour
 {
     private Forecaster _forecast;
     public static WeatherVariation instance;
+    public Text weatherText;
 
     [HideInInspector]
     public WeatherIndex weatherIndex = WeatherIndex.PERFECT;
@@ -18,7 +19,8 @@ public class WeatherVariation : MonoBehaviour
     }
     public float weatherDuration = 8f;
     public float respiteDuration = 2f;
-    private State state = State.RESPITE;
+    [HideInInspector]
+    public State state = State.RESPITE;
     private float duration = 0f;
 
     public float freezingUnlockDuration = 60f;
@@ -51,6 +53,8 @@ public class WeatherVariation : MonoBehaviour
     void Start()
     {
         weatherIndex = WeatherIndex.PERFECT;
+        _forecast.forecastText.gameObject.SetActive(true);
+        weatherText.gameObject.SetActive(false);
         GoToRespite();
     }
 
@@ -73,11 +77,15 @@ public class WeatherVariation : MonoBehaviour
     {
         if (state == State.RESPITE)
         {
+            _forecast.forecastText.gameObject.SetActive(false);
+            weatherText.gameObject.SetActive(true);
             state = State.WEATHER;
             duration = weatherDuration;
         }
         else if (state == State.WEATHER)
         {
+            _forecast.forecastText.gameObject.SetActive(true);
+            weatherText.gameObject.SetActive(false);
             GoToRespite();
         }
 
@@ -91,10 +99,12 @@ public class WeatherVariation : MonoBehaviour
         PickNextWeather();
     }
 
+    /*
     void OnGUI()
     {
         GUI.Label(new Rect(10, 30, 200, 20), "Current Weather:" + weatherIndex.ToString());
     }
+    */
 
     // Checks conditions for unlocking weather indexes
     void TryUnlock()
@@ -135,6 +145,7 @@ public class WeatherVariation : MonoBehaviour
             firstPick = (WeatherIndex)Mathf.Max((int)weatherIndex - delta, (int)WeatherIndex.HEATWAVE);
 
         weatherIndex = firstPick;
+        weatherText.text = "The current weather is : " + weatherIndex;
 
         _forecast.ComputeForecast();
     }
