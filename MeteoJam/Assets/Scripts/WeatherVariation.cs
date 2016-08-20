@@ -5,6 +5,9 @@ using UnityEngine.UI;
 public class WeatherVariation : MonoBehaviour
 {
     private Forecaster _forecast;
+    public static WeatherVariation instance;
+
+    [HideInInspector]
     public WeatherIndex weatherIndex = WeatherIndex.PERFECT;
     public WeatherIndex weatherMax = WeatherIndex.VERY_COLD;
 
@@ -34,6 +37,7 @@ public class WeatherVariation : MonoBehaviour
         VERY_COLD,
         FREEZING,//locked at start
         ABSOLUTE_ZERO,//locked at start, unlocked after freezing
+        _COUNT
     }
 
     // Use this for initialization
@@ -41,12 +45,14 @@ public class WeatherVariation : MonoBehaviour
     {
         _forecast = GetComponent<Forecaster>();
         weatherIndex = WeatherIndex.PERFECT;
+        instance = this;
         GoToRespite();
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (IngameManager.instance.gameOver) return;
         TryUnlock();
 
         duration -= Time.deltaTime;

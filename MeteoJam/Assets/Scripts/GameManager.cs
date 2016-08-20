@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
+
 
 public class GameManager : MonoBehaviour
 {
@@ -16,32 +18,41 @@ public class GameManager : MonoBehaviour
     public Vector2 pushPlayerOrientation = Vector2.right;
     public Vector2 pushClothesOrientation = Vector2.right;
 
-    // Ajout d'une température fixe pour tester la perte
-    // de points de vie pour les joueurs
-    public int temperature = 4;
+    
     public float baseLifepoints = 100f;
     public float baseHeatDamage = 2f;
     public float baseColdDamage = 1f;
     public float baseRegen = 3f;
-    // TODO : intégrer les 3 facteurs de calcul des points de vie
-    // + la formule.
 
-
+    
 
     public List<Clothes> gameClothes;
 
     void Awake()
     {
         instance = this;
+        DontDestroyOnLoad(this);
     }
 
 	// Use this for initialization
 	void Start () {
-	
+        // Commenter si on utilise la scène "Main"
+        if(SceneManager.GetActiveScene().name != "Main")
+        {
+            SceneManager.LoadScene("MainMenuScene", LoadSceneMode.Single);
+        }
+           
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+
+    // Update is called once per frame
+    void Update()
+    {
+
+    }
+
+    public void InitIngame()
+    {
+
+    }
+	    
 }

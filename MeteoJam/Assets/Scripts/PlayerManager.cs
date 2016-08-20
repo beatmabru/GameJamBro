@@ -30,6 +30,8 @@ public class PlayerManager: MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
+        if (IngameManager.instance.gameOver) return; 
+
         UpdateHud();
 
         // Throw : lancer un vêtement
@@ -113,7 +115,7 @@ public class PlayerManager: MonoBehaviour {
     // (pour l'instant, simple delta à chaque frame)
     void UpdateLifepoints()
     {
-        int temperature = GameManager.instance.temperature;
+        int temperature = (int) WeatherVariation.instance.weatherIndex;
         int ecartTemperatureVetement = Mathf.Abs(temperature - clothesList.Count);
         float facteurDegats = temperature > 3 ? GameManager.instance.baseHeatDamage : GameManager.instance.baseColdDamage;
         float damage = facteurDegats * ecartTemperatureVetement * Time.deltaTime;
@@ -136,7 +138,6 @@ public class PlayerManager: MonoBehaviour {
 
     IEnumerator Die()
     {
-        // TODO
         deathTriggered = true;
         for (int i = 0; i < clothesList.Count; i++)
         {
