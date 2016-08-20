@@ -7,7 +7,7 @@ public class PlayerManager: MonoBehaviour {
     public List<Clothes> clothesList;
     private GameObject _attackHitbox;
     [SerializeField]
-    private float lifePoints = 100f;
+    private float lifePoints;
 
     public PlayerHud hud;
     [HideInInspector]
@@ -22,6 +22,7 @@ public class PlayerManager: MonoBehaviour {
         _attackHitbox = transform.Find("HitBoxAttack").gameObject;
         movePlayer = GetComponentInParent<MovePlayer>();
         SetFirstClothes();
+        lifePoints = GameManager.instance.baseLifepoints;
     }
 
     // Update is called once per frame
@@ -29,17 +30,23 @@ public class PlayerManager: MonoBehaviour {
     {
         UpdateHud();
 
+        // Throw : lancer un vêtement
         if (Input.GetButtonDown("Throw" + playerIndex) && clothesList.Count > 0 && canThrow) {
             Clothes thrownClothes = PickClothesFromList(clothesList);
             Vector2 throwOrientation = new Vector2(Input.GetAxis("Horizontal" + playerIndex), Input.GetAxis("Vertical" + playerIndex));
             ClothesFly(thrownClothes,throwOrientation, GameManager.instance.throwForce,true);
         }
-            
+         
+        // Push : pousser un joueur   
         if (Input.GetButtonDown("Push" + playerIndex) && canPush)
         {
             LaunchAttack();
             StartCoroutine(StartCooldownPushCoroutine());
         }
+
+        // Mise à jour des points de vie
+        UpdateLifepoints();
+
     }
 
     void SetFirstClothes()
@@ -98,6 +105,35 @@ public class PlayerManager: MonoBehaviour {
         _attackHitbox.SetActive(true);
     }
 
+    // TODO : intégrer le calcul de perte de point de vie tel que spécifié dans le GDD
+    // (pour l'instant, simple delta à chaque frame)
+    void UpdateLifepoints()
+    {
+        int temperature = GameManager.instance.temperature;
+        int ecartTemperatureVetement = Mathf.Abs(temperature - clothesList.Count);
+        float facteurDegats = temperature > 3 ? GameManager.instance.baseHeatDamage : GameManager.instance.baseColdDamage;
+        float damage = facteurDegats * ecartTemperatureVetement * Time.deltaTime;
+
+
+        if (temperature == 3)
+        {
+            lifePoints = Mathf.Min(GameManager.instance.baseLifepoints, lifePoints + (GameManager.instance.baseRegen - ecartTemperatureVetement) * Time.deltaTime);
+        }
+        else if (lifePoints > 0 && lifePoints <= GameManager.instance.baseLifepoints)
+        {
+            lifePoints = Mathf.Max(0, lifePoints - damage);
+        }
+
+        if (lifePoints == 0)
+        {
+            Die();
+        }
+    }
+
+    void Die()
+    {
+        // TODO
+    }
 
     public void PushPlayer(PlayerManager pushedPlayer)
     {
