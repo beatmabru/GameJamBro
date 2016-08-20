@@ -17,6 +17,11 @@ public class AudioClipManager : MonoBehaviour {
     List<AudioClip> listPlayerWin = new List<AudioClip>();
     List<AudioClip> listPlayerItemGet = new List<AudioClip>();
 
+    List<AudioClip> listForcasterWrongprediction = new List<AudioClip>();
+    List<AudioClip> listForcasterGoodprediction = new List<AudioClip>();
+   // List<AudioClip> list
+ 
+
     // Use this for initialization
 
     void Awake()
