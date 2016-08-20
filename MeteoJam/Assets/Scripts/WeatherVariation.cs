@@ -61,6 +61,7 @@ public class WeatherVariation : MonoBehaviour
 	// Update is called once per frame
 	void Update()
     {
+        if (IngameManager.instance.gameOver) return;
         TryUnlock();
 
         duration -= Time.deltaTime;

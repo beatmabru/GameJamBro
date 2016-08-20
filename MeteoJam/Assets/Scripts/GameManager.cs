@@ -36,7 +36,12 @@ public class GameManager : MonoBehaviour
 
 	// Use this for initialization
 	void Start () {
-        //SceneManager.LoadScene("MainMenuScene", LoadSceneMode.Single);
+        // Commenter si on utilise la scène "Main"
+        if(SceneManager.GetActiveScene().name != "Main")
+        {
+            SceneManager.LoadScene("MainMenuScene", LoadSceneMode.Single);
+        }
+           
 	}
 
     // Update is called once per frame

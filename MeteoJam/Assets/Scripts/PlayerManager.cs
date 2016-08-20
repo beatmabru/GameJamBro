@@ -30,6 +30,8 @@ public class PlayerManager: MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
+        if (IngameManager.instance.gameOver) return; 
+
         UpdateHud();
 
         // Throw : lancer un vêtement
@@ -136,7 +138,6 @@ public class PlayerManager: MonoBehaviour {
 
     IEnumerator Die()
     {
-        // TODO
         deathTriggered = true;
         for (int i = 0; i < clothesList.Count; i++)
         {
