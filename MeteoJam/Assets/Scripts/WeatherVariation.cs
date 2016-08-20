@@ -50,9 +50,7 @@ public class WeatherVariation : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-       
         weatherIndex = WeatherIndex.PERFECT;
-        
         GoToRespite();
     }
 
