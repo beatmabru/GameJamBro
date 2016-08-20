@@ -18,13 +18,16 @@ public class PlayerManager: MonoBehaviour {
     [HideInInspector]
     public bool deathTriggered = false ;
 
+    public AudioSource audioSource;
 
     // Use this for initialization
     void Start () {
+        audioSource = GetComponent<AudioSource>();
         _attackHitbox = transform.Find("HitBoxAttack").gameObject;
         movePlayer = GetComponentInParent<MovePlayer>();
         SetFirstClothes();
         lifePoints = GameManager.instance.baseLifepoints;
+        
     }
 
     // Update is called once per frame
@@ -86,6 +89,8 @@ public class PlayerManager: MonoBehaviour {
     // Ajoute un vêtement à la liste du Player
     public void AddClothesToPlayerList(Clothes clothes)
     {
+        audioSource.clip = AudioClipManager.instance.GetPlayerItemGet();
+        audioSource.Play();
         clothes.transform.SetParent(transform);
         clothes.transform.localScale = Vector3.one;
         clothes.ResetUndetectable();
@@ -108,6 +113,8 @@ public class PlayerManager: MonoBehaviour {
 
     void LaunchAttack()
     {
+        audioSource.clip = AudioClipManager.instance.GetPlayerPush();
+        audioSource.Play();
         _attackHitbox.SetActive(true);
     }
 
@@ -139,12 +146,29 @@ public class PlayerManager: MonoBehaviour {
     IEnumerator Die()
     {
         deathTriggered = true;
+        AudioClip clip;
+        if ((int)WeatherVariation.instance.weatherIndex < 3)
+        {
+            clip = AudioClipManager.instance.GetPlayerDeathByHot(); 
+        }
+        else
+        {
+            clip = AudioClipManager.instance.GetPlayerDeathByCold();
+        }
+
+        audioSource.clip = clip;
+        audioSource.Play();
         for (int i = 0; i < clothesList.Count; i++)
         {
             Clothes clothes = clothesList[i];
             ClothesFly(clothes, GameManager.instance.pushClothesOrientation, GameManager.instance.pushClothesForce,(i%2 == 0));
             yield return new WaitForSeconds(0.2f);
         }
+        GetComponent<SpriteRenderer>().enabled = false;
+        hud.gameObject.SetActive(false);
+        while (audioSource.isPlaying)
+            yield return new WaitForEndOfFrame();
+
         gameObject.SetActive(false);
         hud.gameObject.SetActive(false);
     }
@@ -160,6 +184,8 @@ public class PlayerManager: MonoBehaviour {
         Clothes clothesLost = PickClothesFromList(pushedPlayer.clothesList);
         if (clothesLost)
         {
+            pushedPlayer.audioSource.clip = AudioClipManager.instance.GetPlayerPushed();
+            pushedPlayer.audioSource.Play();
             pushedPlayer.ClothesFly(clothesLost, GameManager.instance.pushClothesOrientation,GameManager.instance.pushClothesForce,movePlayer.isFacingRight);
             clothesLost.DisableOnPush();
         }
