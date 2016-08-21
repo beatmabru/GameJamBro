@@ -6,6 +6,8 @@ public class MusicScript : MonoBehaviour {
     public AudioSource musicNeutre;
     public AudioSource musicHot;
     public AudioSource musicCold;
+    public AudioSource winSong;
+    public AudioSource looseSong;
 
 
     float maxVolume = 0.3f;
@@ -25,10 +27,12 @@ public class MusicScript : MonoBehaviour {
         musicNeutre.Play();
         musicHot.Play();
         musicCold.Play();
+        musicNeutre.loop = true;
+        musicHot.loop = true;
+        musicCold.loop = true;
         musicCold.volume = 0;
         musicHot.volume = 0;
         musicNeutre.volume = maxVolume;
-        
     }
 	
 	// Update is called once per frame
@@ -49,6 +53,17 @@ public class MusicScript : MonoBehaviour {
             StartCoroutine(fadeOutTransition(musicHot));
         }
 	}
+
+    public void NotifyEndGame(bool isWin)
+    {
+        musicNeutre.Stop();
+        musicCold.Stop();
+        musicHot.Stop();
+        if (isWin)
+            winSong.Play();
+        else
+            looseSong.Play();
+    }
 
     IEnumerator fadeInTransition(AudioSource audioSource )
     {

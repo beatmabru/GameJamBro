@@ -75,6 +75,7 @@ public class IngameManager : MonoBehaviour {
             timerSurviveAlone += Time.deltaTime;
             if(timerSurviveAlone > GameManager.instance.timeSurviveAlone && alivePlayers.Count == 1)
             {
+                GameObject.Find("BackGroundMusic").GetComponent<MusicScript>().NotifyEndGame(true);
                 PlayerManager winner = alivePlayers[0].GetComponent<PlayerManager>();
                 winner.VoiceSource.clip = AudioClipManager.instance.GetPlayerWin();
                 winner.VoiceSource.Play();
@@ -87,6 +88,7 @@ public class IngameManager : MonoBehaviour {
             }
             else if (alivePlayers.Count == 0)
             {
+                GameObject.Find("BackGroundMusic").GetComponent<MusicScript>().NotifyEndGame(false);
                 gameOver = true;
                 winText.text = "Sadness and Sorrow ";
                 
