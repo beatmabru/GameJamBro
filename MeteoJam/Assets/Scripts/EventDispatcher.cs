@@ -2,14 +2,15 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class EventDispatcher : MonoBehaviour {
+public class EventDispatcher : ScriptableObject {
 
-    public static EventDispatcher instance;
+    public static EventDispatcher instance = ScriptableObject.CreateInstance<EventDispatcher>();
     public enum EventId
     {
         WEATHER_RESPITE_CHANGE,
         CLOTHES_THROW,
         CLOTHES_GET,
+        PLAYER_DEATH,
     }
 
     public class Event
@@ -20,19 +21,7 @@ public class EventDispatcher : MonoBehaviour {
         public Event(EventId _id, object _data) { id = _id; data = _data; }
     }
 
-	// Use this for initialization
-	void Start ()
-    {
-        if (instance == null)
-            instance = this;
-    }
-    // Update is called once per frame
-    void Update()
-    {
-    }
-
     public List<IEventListener> listeners = new List<IEventListener>();
-	
 
     public void ThrowEvent(Event e)
     {

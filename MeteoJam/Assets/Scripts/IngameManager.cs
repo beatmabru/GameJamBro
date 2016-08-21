@@ -31,13 +31,19 @@ public class IngameManager : MonoBehaviour {
             players.Add(GameObject.Find("Player"+i));
         }
 	}
+
+    private void ResetGame()
+    {
+        EventDispatcher.instance.listeners.Clear();
+        SceneManager.LoadScene("IngameScene");
+    }
 	
 	// Update is called once per frame
 	void Update () {
 
         if (Input.GetButtonDown("ResetGame"))
         {
-            SceneManager.LoadScene("IngameScene");
+            ResetGame();
         }
 
         // Restart possible après game over + 4 secondes
@@ -45,7 +51,7 @@ public class IngameManager : MonoBehaviour {
         bool fourSecondsHavePassedSinceGameOver = (gameTime - timeAtGameOver) > 4f;
         if (fourSecondsHavePassedSinceGameOver && aPlayerPressesJump)
         {
-            SceneManager.LoadScene("IngameScene");
+            ResetGame();
         }
 
         gameTime += Time.deltaTime;
