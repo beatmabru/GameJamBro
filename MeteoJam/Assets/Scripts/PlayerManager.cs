@@ -26,6 +26,7 @@ public class PlayerManager: MonoBehaviour, EventDispatcher.IEventListener
     public int attackWithoutSound;
 
     private WeatherVariation _weather;
+    private MovePlayer _movePlayer;
 
     void Awake()
     {
@@ -35,6 +36,7 @@ public class PlayerManager: MonoBehaviour, EventDispatcher.IEventListener
         GameObject variationHolder = GameObject.Find("WeatherManager");
         Debug.Assert(variationHolder != null);
         _weather = variationHolder.GetComponent<WeatherVariation>();
+        _movePlayer = GetComponent<MovePlayer>();
     }
 
 	public List<SpriteRenderer> listSpriteScarf = new List<SpriteRenderer>();
@@ -106,7 +108,12 @@ public class PlayerManager: MonoBehaviour, EventDispatcher.IEventListener
             Clothes thrownClothes = PickClothesFromList(clothesList);
             EventDispatcher.Event throwClothes = new EventDispatcher.Event(EventDispatcher.EventId.CLOTHES_THROW, this);
             EventDispatcher.instance.ThrowEvent(throwClothes);
-            Vector2 throwOrientation = new Vector2(Input.GetAxis("Horizontal" + playerIndex), Input.GetAxis("Vertical" + playerIndex));
+            float horizontalAxis = Input.GetAxis("Horizontal" + playerIndex);
+            Vector2 throwOrientation = new Vector2(horizontalAxis, Input.GetAxis("Vertical" + playerIndex));
+            if(horizontalAxis==0f)
+            {
+                throwOrientation.x = _movePlayer.isFacingRight ? 1f : -1f;
+            }
             ClothesFly(thrownClothes,throwOrientation, GameManager.instance.throwForce,true);
         }
          

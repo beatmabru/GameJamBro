@@ -39,7 +39,7 @@ public class PlayerHud : MonoBehaviour
     //lifebar alpha
     private static readonly byte alphaLifeBar = 255;
     private static readonly Color32 lifeUp = new Color32(151, 253, 35, alphaLifeBar);
-    private static readonly Color32 respite = new Color32(180, 220, 180, alphaLifeBar);
+    private static readonly Color32 respite = new Color32(222, 223, 165, alphaLifeBar);
     private static readonly Color32 tooHot = new Color32(211, 47, 47, alphaLifeBar);
     private static readonly Color32 tooCold = new Color32(25, 118, 210, alphaLifeBar);
     // private static readonly byte alphaLifeBar = 200;
