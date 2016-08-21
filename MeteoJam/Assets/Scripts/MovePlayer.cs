@@ -13,6 +13,8 @@ public class MovePlayer : MonoBehaviour
 
     private PlayerManager _playerManager;
 
+    private Animator _playerAnimator;
+
     void OnGUI()
     {
         //GUILayout.Label("grounded : " + grounded);
@@ -24,6 +26,7 @@ public class MovePlayer : MonoBehaviour
         _playerManager = GetComponent<PlayerManager>();
         playerIndex = _playerManager.playerIndex;
         _rigidbody = GetComponent<Rigidbody2D>();
+        _playerAnimator = GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -37,13 +40,19 @@ public class MovePlayer : MonoBehaviour
             movement += Vector2.right;
             transform.localScale = Vector3.one;
             isFacingRight = true;
+            _playerAnimator.SetBool("moving", true);
+
         }
         else if (Input.GetAxis("Horizontal"+ playerIndex) < 0)
         {
             movement += Vector2.left;
             transform.localScale = new Vector3(-1,1,1);
             isFacingRight = false;
+            _playerAnimator.SetBool("moving", true);
         }
+        else
+            _playerAnimator.SetBool("moving", false);
+
 
         if (Input.GetButtonDown("Jump"+ playerIndex) && grounded)
             Jump();
@@ -63,6 +72,7 @@ public class MovePlayer : MonoBehaviour
 
     void Jump()
     {
+        _playerAnimator.SetTrigger("Jump");
         _rigidbody.AddForce(Vector2.up * GameManager.instance.jumpForce, ForceMode2D.Impulse);
     }
 
@@ -96,6 +106,8 @@ public class MovePlayer : MonoBehaviour
                     grounded = true;
             }
         }
+
+        _playerAnimator.SetBool("grounded", grounded);
     }
 
     public void PlayerIsPushed(bool pushRight)
@@ -106,5 +118,6 @@ public class MovePlayer : MonoBehaviour
             pushOrientation.x *= -1;
 
         _rigidbody.AddForce(pushOrientation * GameManager.instance.pushPlayerForce, ForceMode2D.Impulse);
+        _playerAnimator.SetTrigger("Hit");
     }
 }

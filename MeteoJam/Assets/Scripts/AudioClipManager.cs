@@ -19,12 +19,15 @@ public class AudioClipManager : MonoBehaviour {
 
     List<AudioClip> listForcasterWrongprediction = new List<AudioClip>();
     List<AudioClip> listForcasterGoodprediction = new List<AudioClip>();
-    AudioClip listForcasterprediction;
-    AudioClip forcasterHot;
-    AudioClip forcasterCold;
+   //AudioClip listForcasterprediction;
+    //AudioClip forcasterHot;
+    //AudioClip forcasterCold;
     List<AudioClip> listForcasterWeathers = new List<AudioClip>();
-    //List<AudioClip> listForcasterHotter = new List<AudioClip>();
-    //List<AudioClip> listForcasterColder = new List<AudioClip>();
+
+    public AudioClip attackSFX;
+    public AudioClip attackMissedSFX;
+    public AudioClip equipSFX;
+    public AudioClip throwCloth;
 
 
     // Use this for initialization
@@ -34,7 +37,6 @@ public class AudioClipManager : MonoBehaviour {
         instance = this;
         narratorAudioClip = Resources.LoadAll<AudioClip>("Sound/narrator");
         playerAudioClip = Resources.LoadAll<AudioClip>("Sound/player");
-        sfxAudioClip = Resources.LoadAll<AudioClip>("Sound/sfx");
 
         foreach (AudioClip clip in playerAudioClip)
         {
@@ -75,21 +77,26 @@ public class AudioClipManager : MonoBehaviour {
             }
             else if(clip.name == "predictions-andtheweatheris")
             {
-                listForcasterprediction = clip;
+                //listForcasterprediction = clip;
             }
             else if (clip.name == "tooHot")
             {
-                forcasterHot = clip;
+               // forcasterHot = clip;
             }
             else if (clip.name == "coldd")
             {
-                forcasterCold = clip;
+                //forcasterCold = clip;
             }
             else if(clip.name.Contains("forcast"))
             {
                 listForcasterWeathers.Add(clip);
             }
         }
+
+     attackSFX = Resources.Load<AudioClip>("Sound/sfx/attack");
+     attackMissedSFX = Resources.Load<AudioClip>("Sound/sfx/attackmissed");
+     equipSFX = Resources.Load<AudioClip>("Sound/sfx/equipement");
+     throwCloth = Resources.Load<AudioClip>("Sound/sfx/retombejsaispas");
         
     }
 

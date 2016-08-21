@@ -18,6 +18,7 @@ public class Forecaster : MonoBehaviour {
         RANDOM
     }
 
+
     public List<string> listWeatherText = new List<string>() {
         "Actually, I'm not wearing any pants right now...",
         "Time to go topless!",
@@ -60,7 +61,7 @@ public class Forecaster : MonoBehaviour {
         audioSource = GetComponent<AudioSource>(); 
     }
 
-    private WeatherVariation.WeatherIndex forecast;
+    public WeatherVariation.WeatherIndex forecast;
 
     // Use this for initialization
     void Start () {
@@ -161,5 +162,49 @@ public class Forecaster : MonoBehaviour {
 
         if (precision != Precision.FLAWED && Time.realtimeSinceStartup >= flawedUnlockDuration)
             precision = Precision.FLAWED;
+    }
+
+    public void Animate(int state)
+    {
+        //weather
+        if (state == 0){
+            //weather prédiction wrong
+            if(_weatherVariation.weatherIndex != forecast)
+            {
+                //anim wrong
+                //sentence sorry
+            }
+
+            if((int)precision == 3)
+            {
+                //anim thumb up + smile
+            }
+            else
+            {
+                //anim finger up
+            }
+
+            //change text with a the current sentence from listWeatherText
+
+
+        }
+        else
+        { //respite
+            switch (precision)
+            {
+                case Precision.PRECISE:
+                    //change text with a random sentence from listPreciseText
+                    break;
+                case Precision.FLAWED:
+                    //change text with a random sentence from listFlawedText
+                    break;
+                case Precision.RANDOM:
+                    //change text with a random sentence from listRandomText
+                    break;
+                default:
+                    break;
+            }
+            //anim show weather
+        }
     }
 }

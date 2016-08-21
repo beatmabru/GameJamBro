@@ -75,6 +75,7 @@ public class WeatherVariation : MonoBehaviour
 
     private void ChangeState()
     {
+        _forecast.Animate((int)state);
         if (state == State.RESPITE)
         {
             _forecast.forecastText.gameObject.SetActive(false);
