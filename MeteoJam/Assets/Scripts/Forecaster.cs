@@ -248,9 +248,13 @@ public class Forecaster : MonoBehaviour
             }
             ecnarfText.text = temp+"C";
             animatorEcnarf.SetInteger("temperature",int.Parse(temp));
+
+            Debug.Log("début");
+
             //weather prédiction wrong
             if (_weatherVariation.weatherIndex != forecast)
             {
+                Debug.Log("wrong");
                 //anim wrong
                 animatorNarrator.SetTrigger("Sorry");
 
@@ -258,9 +262,10 @@ public class Forecaster : MonoBehaviour
                 indexSentenceExcuse = Mathf.CeilToInt(Random.Range(0.1f, listExcuseText.Count)) -1 ;
                 animatorBubble.gameObject.GetComponentInChildren<Text>().text = listExcuseText[indexSentenceExcuse];
                 animatorBubble.SetTrigger("Spawn");
+                AnimationNarratorDelayCoroutine();
             }
 
-            if ((int)precision == 3)
+            if ((int)_weatherVariation.weatherIndex == 3)
             {
                 //anim thumb up + smile
                 animatorNarrator.SetTrigger("ThumbsUp");
@@ -278,7 +283,7 @@ public class Forecaster : MonoBehaviour
         }
         else
         { //respite
-            animatorNarrator.SetTrigger("Noise");
+            //animatorNarrator.SetTrigger("Noise");
             switch (precision)
             {
                 case Precision.PRECISE:
@@ -303,13 +308,18 @@ public class Forecaster : MonoBehaviour
                     break;
             }
             //anim show weather
-            Invoke("RespiteAnimation", 50);
-            animatorNarrator.SetTrigger("Noise");
+            animatorNarrator.SetTrigger("Show");
         }
     }
 
-    private void RespiteAnimation()
+    IEnumerator AnimationNarratorDelayCoroutine()
     {
-        animatorNarrator.SetTrigger("Show");
+        float delay = 5f;
+        while(delay>0)
+        {
+            delay -= Time.deltaTime;
+            yield return 0;
+        }
+        
     }
 }
