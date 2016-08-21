@@ -152,6 +152,8 @@ public class PlayerManager: MonoBehaviour, EventDispatcher.IEventListener
         thrownClothes.transform.localScale = Vector3.one;
         thrownClothes.Throw(orientation, force, this);
 
+		UpdateClotheSprite (thrownClothes, false);
+
         SFXSource.clip = AudioClipManager.instance.throwCloth;
         SFXSource.Play();
 
@@ -173,12 +175,11 @@ public class PlayerManager: MonoBehaviour, EventDispatcher.IEventListener
         _playerAnimator = GetComponent<Animator>();
         _playerAnimator.SetTrigger("Dress");
 
-		RenderCorrectClotheSprite (clothes);
+		UpdateClotheSprite (clothes, true);
 
         EventDispatcher.Event getClothes = new EventDispatcher.Event(EventDispatcher.EventId.CLOTHES_GET, null);
         EventDispatcher.instance.ThrowEvent(getClothes);
     }
-
 
     void playVoiceAccordingToOtherPlayer()
     {
@@ -188,46 +189,46 @@ public class PlayerManager: MonoBehaviour, EventDispatcher.IEventListener
         }
     }
 
-	void RenderCorrectClotheSprite(Clothes clothe)
+	void UpdateClotheSprite(Clothes clothe, bool added)
 	{
 		
-		//Debug.Log ("player : " + name + " clothes : " + clothe.clotheName);
+		//Debug.Log ("player : " + name + " clothes : " + clothe.clotheName + " - " + added);
 		switch (clothe.type) {
 		case Clothes.ClothesType.ACCESSORY:
 			if (clothe.clotheName == "scarf") {
-				listSpriteScarf [0].gameObject.SetActive (true);
+				listSpriteScarf [0].gameObject.SetActive (added);
 			} else {
-				listSpriteGlove [0].gameObject.SetActive (true);
-				listSpriteGlove [1].gameObject.SetActive (true);
+				listSpriteGlove [0].gameObject.SetActive (added);
+				listSpriteGlove [1].gameObject.SetActive (added);
 			}
 			break;
 		case Clothes.ClothesType.BODY:
 			if (clothe.clotheName == "body_01") {
-				listSpriteBody [0].gameObject.SetActive (true);
-				listSpriteLeftArm [0].gameObject.SetActive (true);
-				listSpriteRightArm [0].gameObject.SetActive (true);
+				listSpriteBody [0].gameObject.SetActive (added);
+				listSpriteLeftArm [0].gameObject.SetActive (added);
+				listSpriteRightArm [0].gameObject.SetActive (added);
 			} else if (clothe.clotheName == "body_02") {
-				listSpriteBody [1].gameObject.SetActive (true);
-				listSpriteLeftArm [1].gameObject.SetActive (true);
-				listSpriteRightArm [1].gameObject.SetActive (true);
+				listSpriteBody [1].gameObject.SetActive (added);
+				listSpriteLeftArm [1].gameObject.SetActive (added);
+				listSpriteRightArm [1].gameObject.SetActive (added);
 			}
 			break;
 		case Clothes.ClothesType.HEAD:
 			if (clothe.clotheName == "Hat_01") {
-				listSpriteHat [0].gameObject.SetActive (true);
+				listSpriteHat [0].gameObject.SetActive (added);
 			} else if (clothe.clotheName == "Hat_02") {
-				listSpriteHat [1].gameObject.SetActive (true);
+				listSpriteHat [1].gameObject.SetActive (added);
 			}
 			break;
 		case Clothes.ClothesType.LEG:
 			if (clothe.clotheName == "leg_01") {
-				listSpritePants [0].gameObject.SetActive (true);
-				listSpriteLeftLegs [0].gameObject.SetActive (true);
-				listSpriteRightLegs [0].gameObject.SetActive (true);
+				listSpritePants [0].gameObject.SetActive (added);
+				listSpriteLeftLegs [0].gameObject.SetActive (added);
+				listSpriteRightLegs [0].gameObject.SetActive (added);
 			} else if (clothe.clotheName == "leg_02") {
-				listSpritePants [1].gameObject.SetActive (true);
-				listSpriteLeftLegs [1].gameObject.SetActive (true);
-				listSpriteRightLegs [1].gameObject.SetActive (true);
+				listSpritePants [1].gameObject.SetActive (added);
+				listSpriteLeftLegs [1].gameObject.SetActive (added);
+				listSpriteRightLegs [1].gameObject.SetActive (added);
 			}
 			break;
 		}

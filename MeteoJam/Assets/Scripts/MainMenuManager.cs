@@ -8,7 +8,7 @@ public class MainMenuManager : MonoBehaviour {
     public Text mainText;
     private bool[] playerReady = new bool[4];
     public Text[] playerText = new Text[4];
-    int countdown = 3;
+    public int countdown = 3;
     bool loadStarted = false;
     // Use this for initialization
     void Start () {
@@ -20,7 +20,7 @@ public class MainMenuManager : MonoBehaviour {
         
         for (int i = 1; i <= 4; i++)
         {
-            if (Input.GetButtonDown("Jump1"))
+            if (Input.GetButtonDown("Jump"+i))
             {
                 playerReady[i-1] = true;
                 playerText[i-1].text = "READY !";
