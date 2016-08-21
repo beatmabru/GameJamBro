@@ -6,7 +6,8 @@ public class PlayerManager: MonoBehaviour, EventDispatcher.IEventListener
 {
 
     public List<Clothes> clothesList;
-    private GameObject _attackHitbox;
+    [HideInInspector]
+    public GameObject _attackHitbox;
     [SerializeField]
     private float lifePoints;
 
@@ -185,10 +186,13 @@ public class PlayerManager: MonoBehaviour, EventDispatcher.IEventListener
         EventDispatcher.instance.listeners.Remove(this);
     }
 
-    public void PushPlayer(PlayerManager pushedPlayer)
+    public void PushPlayer(PlayerManager pushedPlayer, bool loseClothes)
     {
         pushedPlayer.movePlayer.PlayerIsPushed(movePlayer.isFacingRight);
-        EjectClothesOnPush(pushedPlayer);
+        if (loseClothes)
+        {
+            EjectClothesOnPush(pushedPlayer);
+        }
     }
 
     public void EjectClothesOnPush(PlayerManager pushedPlayer)
