@@ -170,7 +170,7 @@ public class PlayerManager: MonoBehaviour, EventDispatcher.IEventListener
     public void AddClothesToPlayerList(Clothes clothes)
     {
         VoiceSource.clip = AudioClipManager.instance.GetPlayerItemGet();
-        playVoiceAccordingToOtherPlayer();
+        AudioClipManager.instance.playSound(VoiceSource);
         SFXSource.clip = AudioClipManager.instance.equipSFX;
         SFXSource.Play();
         clothes.transform.SetParent(transform);
@@ -186,14 +186,6 @@ public class PlayerManager: MonoBehaviour, EventDispatcher.IEventListener
 
         EventDispatcher.Event getClothes = new EventDispatcher.Event(EventDispatcher.EventId.CLOTHES_GET, null);
         EventDispatcher.instance.ThrowEvent(getClothes);
-    }
-
-    void playVoiceAccordingToOtherPlayer()
-    {
-        if(AudioClipManager.instance.numberPlayerPlayingVoice() < 2)
-        {
-            VoiceSource.Play();
-        }
     }
 
 	void UpdateClotheSprite(Clothes clothe, bool added)
@@ -305,7 +297,8 @@ public class PlayerManager: MonoBehaviour, EventDispatcher.IEventListener
         }
 
         VoiceSource.clip = clip;
-        VoiceSource.Play();
+        AudioClipManager.instance.playSound(VoiceSource);
+       // VoiceSource.Play();
         for (int i = 0; i < clothesList.Count; i++)
         {
             Clothes clothes = clothesList[i];

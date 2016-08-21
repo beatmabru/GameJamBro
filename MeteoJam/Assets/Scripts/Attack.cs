@@ -52,7 +52,7 @@ public class Attack : MonoBehaviour
             {
                 _attacker.attackWithoutSound = 0;
                 _attacker.VoiceSource.clip = AudioClipManager.instance.GetPlayerPush();
-                _attacker.VoiceSource.Play();
+                AudioClipManager.instance.playSound(_attacker.VoiceSource);
             }
             else
             {

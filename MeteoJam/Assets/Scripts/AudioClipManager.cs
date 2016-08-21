@@ -34,12 +34,18 @@ public class AudioClipManager : MonoBehaviour {
     public PlayerManager player3;
     public PlayerManager player4;
 
+    private List<AudioSource> audioSources;
+ 
 
     // Use this for initialization
 
     void Awake()
     {
         instance = this;
+        audioSources = new List<AudioSource>();
+        audioSources.Add(null);
+        audioSources.Add(null);
+        audioSources.Add(null);
         narratorAudioClip = Resources.LoadAll<AudioClip>("Sound/narrator");
         playerAudioClip = Resources.LoadAll<AudioClip>("Sound/player");
 
@@ -140,6 +146,51 @@ public class AudioClipManager : MonoBehaviour {
         if (player4.VoiceSource.isPlaying) result++;
         return result;
 
+    }
+
+    private void addAudioSource(AudioSource source)
+    {
+        if (audioSources.Count >= 3)
+        {
+
+            if (audioSources[2] != null) { audioSources[2].Stop();
+            }
+        }
+        audioSources[2] = audioSources[1];
+        audioSources[1] = audioSources[0];
+        audioSources[0] = source;
+    }
+
+    public void playSound(AudioSource audiosource)
+    {
+        audiosource.Play();
+        addAudioSource(audiosource);
+        StartCoroutine(deleteAudioSource(audiosource));
+    }
+
+    IEnumerator deleteAudioSource(AudioSource audioSource)
+    {
+        while (audioSource.isPlaying) { yield return new WaitForEndOfFrame(); }
+        for(int i=0; i<3; i++)
+        {
+            if(audioSources[i] == audioSource)
+            {
+                switch (i)
+                {
+                    case 2:
+                        audioSources[2] = null;
+                        break;
+                    case 1:
+                        audioSources[1] = audioSources[2];
+                        break;
+                    case 0:
+                        audioSources[0] = audioSources[1];
+                        audioSources[1] = audioSources[2];
+                        break;
+                }
+            }
+        }
+        yield return null;
     }
 
     public AudioClip GetPlayerDeathByCold()
