@@ -20,17 +20,21 @@ public class PlayerManager: MonoBehaviour, EventDispatcher.IEventListener
     [HideInInspector]
     public bool deathTriggered = false ;
 
-    public AudioSource audioSource;
+    public AudioSource VoiceSource;
+    public AudioSource SFXSource;
+    private Animator _playerAnimator;
 
     // Use this for initialization
     void Start () {
-        audioSource = GetComponent<AudioSource>();
+        AudioSource[] audiosources = GetComponents<AudioSource>();
+        VoiceSource = audiosources[0];
+        SFXSource = audiosources[1];
         _attackHitbox = transform.Find("HitBoxAttack").gameObject;
         EventDispatcher.instance.listeners.Add(this);
         movePlayer = GetComponentInParent<MovePlayer>();
         SetFirstClothes();
         lifePoints = GameManager.instance.baseLifepoints;
-        
+        _playerAnimator = GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -41,7 +45,9 @@ public class PlayerManager: MonoBehaviour, EventDispatcher.IEventListener
         UpdateHud();
 
         // Throw : lancer un vêtement
-        if (Input.GetButtonDown("Throw" + playerIndex) && clothesList.Count > 0 && canThrow) {
+        if (Input.GetButtonDown("Throw" + playerIndex) && clothesList.Count > 0 && canThrow)
+        {
+            _playerAnimator.SetTrigger("Throw");
             Clothes thrownClothes = PickClothesFromList(clothesList);
             EventDispatcher.Event throwClothes = new EventDispatcher.Event(EventDispatcher.EventId.CLOTHES_THROW, this);
             EventDispatcher.instance.ThrowEvent(throwClothes);
@@ -90,18 +96,27 @@ public class PlayerManager: MonoBehaviour, EventDispatcher.IEventListener
         thrownClothes.transform.SetParent(null);
         thrownClothes.transform.localScale = Vector3.one;
         thrownClothes.Throw(orientation, force, this);
+
+        SFXSource.clip = AudioClipManager.instance.throwCloth;
+        SFXSource.Play();
+
     }
 
     // Ajoute un vêtement à la liste du Player
     public void AddClothesToPlayerList(Clothes clothes)
     {
-        audioSource.clip = AudioClipManager.instance.GetPlayerItemGet();
-        audioSource.Play();
+        VoiceSource.clip = AudioClipManager.instance.GetPlayerItemGet();
+        VoiceSource.Play();
+        SFXSource.clip = AudioClipManager.instance.equipSFX;
+        SFXSource.Play();
         clothes.transform.SetParent(transform);
         clothes.transform.localScale = Vector3.one;
         clothes.ResetUndetectable();
         clothes.gameObject.SetActive(false);
         clothesList.Add(clothes);
+
+        _playerAnimator = GetComponent<Animator>();
+        _playerAnimator.SetTrigger("Dress");
 
         EventDispatcher.Event getClothes = new EventDispatcher.Event(EventDispatcher.EventId.CLOTHES_GET, null);
         EventDispatcher.instance.ThrowEvent(getClothes);
@@ -122,8 +137,9 @@ public class PlayerManager: MonoBehaviour, EventDispatcher.IEventListener
 
     void LaunchAttack()
     {
-        audioSource.clip = AudioClipManager.instance.GetPlayerPush();
-        audioSource.Play();
+        VoiceSource.clip = AudioClipManager.instance.GetPlayerPush();
+        VoiceSource.Play();
+        _playerAnimator.SetTrigger("Push");
         _attackHitbox.SetActive(true);
     }
 
@@ -168,17 +184,17 @@ public class PlayerManager: MonoBehaviour, EventDispatcher.IEventListener
             clip = AudioClipManager.instance.GetPlayerDeathByCold();
         }
 
-        audioSource.clip = clip;
-        audioSource.Play();
+        VoiceSource.clip = clip;
+        VoiceSource.Play();
         for (int i = 0; i < clothesList.Count; i++)
         {
             Clothes clothes = clothesList[i];
             ClothesFly(clothes, GameManager.instance.pushClothesOrientation, GameManager.instance.pushClothesForce,(i%2 == 0));
             yield return new WaitForSeconds(0.2f);
         }
-        GetComponent<SpriteRenderer>().enabled = false;
+        _playerAnimator.SetTrigger("Death");
         hud.gameObject.SetActive(false);
-        while (audioSource.isPlaying)
+        while (VoiceSource.isPlaying)
             yield return new WaitForEndOfFrame();
 
         gameObject.SetActive(false);
@@ -193,6 +209,11 @@ public class PlayerManager: MonoBehaviour, EventDispatcher.IEventListener
         {
             EjectClothesOnPush(pushedPlayer);
         }
+        else
+        {
+            SFXSource.clip = AudioClipManager.instance.attackMissedSFX;
+            SFXSource.Play();
+        }
     }
 
     public void EjectClothesOnPush(PlayerManager pushedPlayer)
@@ -200,8 +221,11 @@ public class PlayerManager: MonoBehaviour, EventDispatcher.IEventListener
         Clothes clothesLost = PickClothesFromList(pushedPlayer.clothesList);
         if (clothesLost)
         {
-            pushedPlayer.audioSource.clip = AudioClipManager.instance.GetPlayerPushed();
-            pushedPlayer.audioSource.Play();
+            pushedPlayer.VoiceSource.clip = AudioClipManager.instance.GetPlayerPushed();
+            pushedPlayer.VoiceSource.Play();
+            SFXSource.clip = AudioClipManager.instance.attackSFX;
+            SFXSource.Play();
+
             pushedPlayer.ClothesFly(clothesLost, GameManager.instance.pushClothesOrientation,GameManager.instance.pushClothesForce,movePlayer.isFacingRight);
             clothesLost.DisableOnPush();
             EventDispatcher.Event throwClothes = new EventDispatcher.Event(EventDispatcher.EventId.CLOTHES_THROW, (object)pushedPlayer);
@@ -261,5 +285,10 @@ public class PlayerManager: MonoBehaviour, EventDispatcher.IEventListener
         }
 
         return false;
+    }
+
+    public void LaunchWinAnimation()
+    {
+        _playerAnimator.SetTrigger("Win");
     }
 }
