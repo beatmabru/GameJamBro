@@ -54,8 +54,8 @@ public class IngameManager : MonoBehaviour {
             timerSurviveAlone += Time.deltaTime;
             if(timerSurviveAlone > GameManager.instance.timeSurviveAlone && alivePlayers.Count == 1)
             {
-                alivePlayers[0].GetComponent<PlayerManager>().audioSource.clip = AudioClipManager.instance.GetPlayerWin();
-                alivePlayers[0].GetComponent<PlayerManager>().audioSource.Play();
+                alivePlayers[0].GetComponent<PlayerManager>().VoiceSource.clip = AudioClipManager.instance.GetPlayerWin();
+                alivePlayers[0].GetComponent<PlayerManager>().VoiceSource.Play();
                 gameOver = true;
                 winText.text = "Congratulations " + alivePlayers[0].name;
                 winText.gameObject.SetActive(true);
