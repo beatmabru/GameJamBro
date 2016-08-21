@@ -71,7 +71,9 @@ public class IngameManager : MonoBehaviour {
 
     void OnGUI()
     {
-        GUI.Label(new Rect(100, 20, 100, 20), gameTime.ToString());
+        GUIStyle ballRun = new GUIStyle();
+        ballRun.normal.textColor = Color.black;
+        GUI.Label(new Rect(50, 10, 100, 20), gameTime.ToString(), ballRun);
     }
 
    

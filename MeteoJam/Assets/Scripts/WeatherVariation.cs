@@ -23,8 +23,8 @@ public class WeatherVariation : MonoBehaviour
     public State state = State.RESPITE;
     private float duration = 0f;
 
-    public float freezingUnlockDuration = 60f;
-    public float absoluteZeroUnlockDuration = 90f;
+    public float freezingUnlockDuration = 30f;
+    public float absoluteZeroUnlockDuration = 45f;
 
     public uint weatherDelta = 2u;
 
