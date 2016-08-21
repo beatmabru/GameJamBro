@@ -278,6 +278,7 @@ public class Forecaster : MonoBehaviour
         }
         else
         { //respite
+            animatorNarrator.SetTrigger("Noise");
             switch (precision)
             {
                 case Precision.PRECISE:
@@ -303,7 +304,7 @@ public class Forecaster : MonoBehaviour
             }
             //anim show weather
             Invoke("RespiteAnimation", 50);
-            
+            animatorNarrator.SetTrigger("Noise");
         }
     }
 

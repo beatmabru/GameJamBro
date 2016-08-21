@@ -15,6 +15,7 @@ public class IngameManager : MonoBehaviour {
     public bool gameOver;
     float timerSurviveAlone;
     bool surviveAloneStarted = false;
+    public Animator animatorNarrator;
 
     // On gère deux compteurs de temps, dont l'un
     // qu'on arrête au moment du game over.
@@ -88,6 +89,7 @@ public class IngameManager : MonoBehaviour {
             }
             else if (alivePlayers.Count == 0)
             {
+                animatorNarrator.SetTrigger("Win");
                 GameObject.Find("BackGroundMusic").GetComponent<MusicScript>().NotifyEndGame(false);
                 gameOver = true;
                 winText.text = "Sadness and Sorrow ";
