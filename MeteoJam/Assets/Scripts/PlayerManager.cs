@@ -23,12 +23,18 @@ public class PlayerManager: MonoBehaviour, EventDispatcher.IEventListener
     public AudioSource VoiceSource;
     public AudioSource SFXSource;
     private Animator _playerAnimator;
+    public int attackWithoutSound;
 
-    // Use this for initialization
-    void Start () {
+    void Awake()
+    {
         AudioSource[] audiosources = GetComponents<AudioSource>();
         VoiceSource = audiosources[0];
         SFXSource = audiosources[1];
+    }
+
+    // Use this for initialization
+    void Start () {
+        attackWithoutSound = 0;
         _attackHitbox = transform.Find("HitBoxAttack").gameObject;
         EventDispatcher.instance.listeners.Add(this);
         movePlayer = GetComponentInParent<MovePlayer>();
@@ -106,7 +112,7 @@ public class PlayerManager: MonoBehaviour, EventDispatcher.IEventListener
     public void AddClothesToPlayerList(Clothes clothes)
     {
         VoiceSource.clip = AudioClipManager.instance.GetPlayerItemGet();
-        VoiceSource.Play();
+        playVoiceAccordingToOtherPlayer();
         SFXSource.clip = AudioClipManager.instance.equipSFX;
         SFXSource.Play();
         clothes.transform.SetParent(transform);
@@ -120,6 +126,14 @@ public class PlayerManager: MonoBehaviour, EventDispatcher.IEventListener
 
         EventDispatcher.Event getClothes = new EventDispatcher.Event(EventDispatcher.EventId.CLOTHES_GET, null);
         EventDispatcher.instance.ThrowEvent(getClothes);
+    }
+
+    void playVoiceAccordingToOtherPlayer()
+    {
+        if(AudioClipManager.instance.numberPlayerPlayingVoice() < 2)
+        {
+            VoiceSource.Play();
+        }
     }
 
     Clothes PickClothesFromList(List<Clothes> clothesList)
@@ -137,8 +151,6 @@ public class PlayerManager: MonoBehaviour, EventDispatcher.IEventListener
 
     void LaunchAttack()
     {
-        VoiceSource.clip = AudioClipManager.instance.GetPlayerPush();
-        VoiceSource.Play();
         _playerAnimator.SetTrigger("Push");
         _attackHitbox.SetActive(true);
     }
@@ -222,9 +234,8 @@ public class PlayerManager: MonoBehaviour, EventDispatcher.IEventListener
         if (clothesLost)
         {
             pushedPlayer.VoiceSource.clip = AudioClipManager.instance.GetPlayerPushed();
-            pushedPlayer.VoiceSource.Play();
-            SFXSource.clip = AudioClipManager.instance.attackSFX;
-            SFXSource.Play();
+            if (AudioClipManager.instance.numberPlayerPlayingVoice() < 2) { pushedPlayer.VoiceSource.Play(); }
+           
 
             pushedPlayer.ClothesFly(clothesLost, GameManager.instance.pushClothesOrientation,GameManager.instance.pushClothesForce,movePlayer.isFacingRight);
             clothesLost.DisableOnPush();

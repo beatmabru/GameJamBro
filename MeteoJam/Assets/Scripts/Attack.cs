@@ -29,6 +29,9 @@ public class Attack : MonoBehaviour
     {
         if (col.tag == "Player")
         {
+            _attacker.SFXSource.clip = AudioClipManager.instance.attackSFX;
+            _attacker.SFXSource.Play();
+
             // Si le joueur adverse n'est pas en train de push face à son attaquant
             PlayerManager attackedPlayer = col.GetComponent<PlayerManager>();
             if (!attackedPlayer._attackHitbox.activeSelf)
@@ -40,6 +43,20 @@ public class Attack : MonoBehaviour
             {
                 _attacker.PushPlayer(col.GetComponent<PlayerManager>(), false);
                 attackedPlayer.PushPlayer(_attacker, false);
+            }
+        }
+        else
+        {
+            int random = Mathf.CeilToInt(Random.Range(0.01f, 5)) - 1;
+            if (random > 2 || _attacker.attackWithoutSound >= 2)
+            {
+                _attacker.attackWithoutSound = 0;
+                _attacker.VoiceSource.clip = AudioClipManager.instance.GetPlayerPush();
+                _attacker.VoiceSource.Play();
+            }
+            else
+            {
+                _attacker.attackWithoutSound++;
             }
         }
     }

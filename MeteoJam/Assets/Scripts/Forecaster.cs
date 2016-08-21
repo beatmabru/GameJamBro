@@ -8,8 +8,10 @@ public class Forecaster : MonoBehaviour {
     public Precision precision = Precision.PRECISE;
     public float flawedUnlockDuration = 60f;
     public float randomUnlockDuration = 90f;
-    private AudioSource audioSource;
+    public AudioSource audioSource;
     public Text forecastText;
+
+
 
     public enum Precision
     {
@@ -58,14 +60,14 @@ public class Forecaster : MonoBehaviour {
     void Awake()
     {
         _weatherVariation = GetComponent<WeatherVariation>();
-        audioSource = GetComponent<AudioSource>(); 
+        audioSource = GetComponent<AudioSource>();
+        
     }
 
     public WeatherVariation.WeatherIndex forecast;
 
     // Use this for initialization
     void Start () {
-     
     }
 
     // Update is called once per frame
@@ -112,8 +114,8 @@ public class Forecaster : MonoBehaviour {
 
         forecastText.text = "The incoming weather is : " + forecast;
 
-        audioSource.clip = AudioClipManager.instance.GetForcasterWeatherById((int)forecast);
-        audioSource.Play();
+        AudioClip clip = AudioClipManager.instance.GetForcasterWeatherById((int)forecast);
+        playSound(clip);
         StartCoroutine(playnarratorResult(forecast == _weatherVariation.weatherIndex)); 
 
     }
@@ -121,9 +123,39 @@ public class Forecaster : MonoBehaviour {
     IEnumerator playnarratorResult(bool wasTrue)
     {
         yield return new WaitForSeconds(3);
-        audioSource.clip = AudioClipManager.instance.GetForcasterResult(wasTrue);
-        audioSource.Play();
+        AudioClip clip = AudioClipManager.instance.GetForcasterResult(wasTrue);
+        playSound(clip);
 
+    }
+
+    IEnumerator correctSoundVolumeAfterPlaying()
+    {
+        while(audioSource.isPlaying) { yield return new WaitForEndOfFrame(); }
+        changePlayerVolume(1.0f);
+        yield return null;
+
+    }
+
+    void playSound(AudioClip clip)
+    {
+        audioSource.clip = clip;
+        changePlayerVolume(0.2f);
+       
+        audioSource.Play();
+        StartCoroutine(correctSoundVolumeAfterPlaying());
+    }
+
+    void changePlayerVolume(float volume)
+    {
+        AudioClipManager.instance.player1.VoiceSource.volume = volume;
+        AudioClipManager.instance.player2.VoiceSource.volume = volume;
+        AudioClipManager.instance.player3.VoiceSource.volume = volume;
+        AudioClipManager.instance.player4.VoiceSource.volume = volume;
+
+        AudioClipManager.instance.player1.SFXSource.volume = volume;
+        AudioClipManager.instance.player2.SFXSource.volume = volume;
+        AudioClipManager.instance.player3.SFXSource.volume = volume;
+        AudioClipManager.instance.player4.SFXSource.volume = volume;
     }
 
     private WeatherVariation.WeatherIndex VariationWeather(int min, int max)

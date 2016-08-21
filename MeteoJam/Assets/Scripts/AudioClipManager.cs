@@ -29,6 +29,11 @@ public class AudioClipManager : MonoBehaviour {
     public AudioClip equipSFX;
     public AudioClip throwCloth;
 
+    public PlayerManager player1;
+    public PlayerManager player2;
+    public PlayerManager player3;
+    public PlayerManager player4;
+
 
     // Use this for initialization
 
@@ -124,6 +129,17 @@ public class AudioClipManager : MonoBehaviour {
         }
         return returnVal;
        
+    }
+
+    public int numberPlayerPlayingVoice()
+    {
+        int result = 0;
+        if (player1.VoiceSource.isPlaying) result++;
+        if (player2.VoiceSource.isPlaying) result++;
+        if (player3.VoiceSource.isPlaying) result++;
+        if (player4.VoiceSource.isPlaying) result++;
+        return result;
+
     }
 
     public AudioClip GetPlayerDeathByCold()

@@ -7,7 +7,7 @@ public class MusicScript : MonoBehaviour {
     public AudioSource musicHot;
     public AudioSource musicCold;
 
-    float maxVolume = 0.5f;
+    float maxVolume = 0.3f;
 	// Use this for initialization
 	void Start () {
         musicNeutre.Play();
