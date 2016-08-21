@@ -21,7 +21,7 @@ public class MoveHudToPlayer : MonoBehaviour
 	void Update ()
     {
         Vector3 viewPos = _camera.WorldToViewportPoint(playerTarget.position);
-        Vector2 newPos = new Vector2(viewPos.x * _canvas.rect.width, viewPos.y * _canvas.rect.height);
+        Vector2 newPos = new Vector2(viewPos.x * _canvas.rect.width, viewPos.y * _canvas.rect.height + 30f);
         _rectTransform.anchoredPosition = Vector2.Lerp(_rectTransform.anchoredPosition, newPos, damp * Time.deltaTime);
     }
 }
