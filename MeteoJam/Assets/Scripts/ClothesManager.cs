@@ -28,7 +28,7 @@ public class ClothesManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		foreach (Clothes clothe in gameClothes) {
-			
+			//Debug.Log ("clothe name = " + clothe.name + " - " + clothe.type);
 			switch (clothe.type) {
 			case Clothes.ClothesType.ACCESSORY:
 				clothe.clotheName = listAccessorySprite [indexAccessorySprite].name; 

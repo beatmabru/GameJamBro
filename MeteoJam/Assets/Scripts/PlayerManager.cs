@@ -60,31 +60,31 @@ public class PlayerManager: MonoBehaviour, EventDispatcher.IEventListener
 	void InitClotheColor()
 	{
 		foreach (SpriteRenderer renderer in listSpriteScarf) {
-			renderer.color = GameManager.instance.PlayerColor [playerIndex];
+			renderer.color = GameManager.instance.PlayerColor [playerIndex-1];
 		}
 		foreach (SpriteRenderer renderer in listSpriteGlove) {
-			renderer.color = GameManager.instance.PlayerColor [playerIndex];
+			renderer.color = GameManager.instance.PlayerColor [playerIndex-1];
 		}
 		foreach (SpriteRenderer renderer in listSpriteHat) {
-			renderer.color = GameManager.instance.PlayerColor [playerIndex];
+			renderer.color = GameManager.instance.PlayerColor [playerIndex-1];
 		}
 		foreach (SpriteRenderer renderer in listSpriteBody) {
-			renderer.color = GameManager.instance.PlayerColor [playerIndex];
+			renderer.color = GameManager.instance.PlayerColor [playerIndex-1];
 		}
 		foreach (SpriteRenderer renderer in listSpriteLeftArm) {
-			renderer.color = GameManager.instance.PlayerColor [playerIndex];
+			renderer.color = GameManager.instance.PlayerColor [playerIndex-1];
 		}
 		foreach (SpriteRenderer renderer in listSpriteRightArm) {
-			renderer.color = GameManager.instance.PlayerColor [playerIndex];
+			renderer.color = GameManager.instance.PlayerColor [playerIndex-1];
 		}
 		foreach (SpriteRenderer renderer in listSpriteLeftLegs) {
-			renderer.color = GameManager.instance.PlayerColor [playerIndex];
+			renderer.color = GameManager.instance.PlayerColor [playerIndex-1];
 		}
 		foreach (SpriteRenderer renderer in listSpriteRightLegs) {
-			renderer.color = GameManager.instance.PlayerColor [playerIndex];
+			renderer.color = GameManager.instance.PlayerColor [playerIndex-1];
 		}
 		foreach (SpriteRenderer renderer in listSpritePants) {
-			renderer.color = GameManager.instance.PlayerColor [playerIndex];
+			renderer.color = GameManager.instance.PlayerColor [playerIndex-1];
 		}
 
 	}
@@ -177,9 +177,7 @@ public class PlayerManager: MonoBehaviour, EventDispatcher.IEventListener
 
 	void RenderCorrectClotheSprite(Clothes clothe)
 	{
-		if (!name.Contains ("1")) {
-			return;
-		}
+		
 		//Debug.Log ("player : " + name + " clothes : " + clothe.clotheName);
 		switch (clothe.type) {
 		case Clothes.ClothesType.ACCESSORY:
