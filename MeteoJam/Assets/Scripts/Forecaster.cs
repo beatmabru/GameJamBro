@@ -272,8 +272,7 @@ public class Forecaster : MonoBehaviour
             }
 
             //change text with a the current sentence from listWeatherText
-            indexSentenceWeather = Mathf.CeilToInt(Random.Range(0.1f, listWeatherText.Count)) - 1;
-            animatorBubble.gameObject.GetComponentInChildren<Text>().text = listWeatherText[indexSentenceWeather];
+            animatorBubble.gameObject.GetComponentInChildren<Text>().text = listWeatherText[(int)_weatherVariation.weatherIndex];
             animatorBubble.SetTrigger("Spawn");
 
         }
@@ -303,7 +302,13 @@ public class Forecaster : MonoBehaviour
                     break;
             }
             //anim show weather
-            animatorNarrator.SetTrigger("Show");
+            Invoke("RespiteAnimation", 50);
+            
         }
+    }
+
+    private void RespiteAnimation()
+    {
+        animatorNarrator.SetTrigger("Show");
     }
 }
