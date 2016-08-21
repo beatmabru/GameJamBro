@@ -8,8 +8,7 @@ public class PlayerManager: MonoBehaviour, EventDispatcher.IEventListener
     public List<Clothes> clothesList;
     [HideInInspector]
     public GameObject _attackHitbox;
-    [SerializeField]
-    private float lifePoints;
+    public float lifePoints;
 
     public PlayerHud hud;
     [HideInInspector]
