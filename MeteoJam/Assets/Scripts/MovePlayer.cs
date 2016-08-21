@@ -35,7 +35,7 @@ public class MovePlayer : MonoBehaviour
         movement = Vector2.zero;
         if (_playerManager.deathTriggered) return;
 
-        if (Input.GetAxis("Horizontal"+ playerIndex) > 0)
+        if (Input.GetAxis("Horizontal"+ playerIndex) > 0.1f)
         {
             movement += Vector2.right;
             transform.localScale = Vector3.one;
@@ -43,7 +43,7 @@ public class MovePlayer : MonoBehaviour
             _playerAnimator.SetBool("moving", true);
 
         }
-        else if (Input.GetAxis("Horizontal"+ playerIndex) < 0)
+        else if (Input.GetAxis("Horizontal"+ playerIndex) < -0.1f)
         {
             movement += Vector2.left;
             transform.localScale = new Vector3(-1,1,1);
