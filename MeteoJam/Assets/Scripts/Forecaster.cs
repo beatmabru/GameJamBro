@@ -3,13 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 
-public class Forecaster : MonoBehaviour {
+public class Forecaster : MonoBehaviour
+{
     private WeatherVariation _weatherVariation;
     public Precision precision = Precision.PRECISE;
     public float flawedUnlockDuration = 60f;
     public float randomUnlockDuration = 90f;
     public AudioSource audioSource;
-    //public Text forecastText;
+    public Text forecastText;
 
 
 
@@ -20,6 +21,12 @@ public class Forecaster : MonoBehaviour {
         RANDOM
     }
 
+    public Animator animatorBubble;
+    public Animator animatorNarrator;
+    public Animator animatorEcnarf;
+    public Animator animatorCamera;
+
+    public Text ecnarfText;
 
     public List<string> listWeatherText = new List<string>() {
         "Actually, I'm not wearing any pants right now...",
@@ -45,7 +52,7 @@ public class Forecaster : MonoBehaviour {
     };
 
     public List<string> listRandomText = new List<string>() {
-        "Some heavy rain or a happy sky? ... May be?",
+        "Some heavy rain or a happy sky? ... Maybe?",
         "Who's playing with my climat-tact?"
     };
 
@@ -61,17 +68,25 @@ public class Forecaster : MonoBehaviour {
     {
         _weatherVariation = GetComponent<WeatherVariation>();
         audioSource = GetComponent<AudioSource>();
-        
+
     }
 
     public WeatherVariation.WeatherIndex forecast;
+    private int indexSentenceExcuse;
+    private int indexSentenceWeather;
+    private int indexSentencePrecise;
+    private int indexSentenceFlawed;
+    private int indexSentenceRandom;
+    private string temp;
 
     // Use this for initialization
-    void Start () {
+    void Start()
+    {
     }
 
     // Update is called once per frame
-    void Update () {
+    void Update()
+    {
         TryUnlock();
     }
 
@@ -88,13 +103,13 @@ public class Forecaster : MonoBehaviour {
         {
             case Precision.PRECISE:
                 if (Random.Range(0, 100) > 75)
-                    forecast = VariationWeather(1,1);
+                    forecast = VariationWeather(1, 1);
                 else
                     forecast = _weatherVariation.weatherIndex;
                 break;
             case Precision.FLAWED:
                 if (Random.Range(0, 10) > 4)
-                    forecast = VariationWeather(1,3);
+                    forecast = VariationWeather(1, 3);
                 else
                     forecast = _weatherVariation.weatherIndex;
                 break;
@@ -103,20 +118,18 @@ public class Forecaster : MonoBehaviour {
                 if (percent <= 2)
                     forecast = _weatherVariation.weatherIndex;
                 else if (percent < 7)
-                    forecast = VariationWeather(1,3);
+                    forecast = VariationWeather(1, 3);
                 else
-                    forecast = VariationWeather(2,4);
+                    forecast = VariationWeather(2, 4);
 
                 break;
             default:
                 break;
         }
 
-        //forecastText.text = "The incoming weather is : " + forecast;
-
         AudioClip clip = AudioClipManager.instance.GetForcasterWeatherById((int)forecast);
         playSound(clip);
-        StartCoroutine(playnarratorResult(forecast == _weatherVariation.weatherIndex)); 
+        StartCoroutine(playnarratorResult(forecast == _weatherVariation.weatherIndex));
 
     }
 
@@ -130,7 +143,7 @@ public class Forecaster : MonoBehaviour {
 
     IEnumerator correctSoundVolumeAfterPlaying()
     {
-        while(audioSource.isPlaying) { yield return new WaitForEndOfFrame(); }
+        while (audioSource.isPlaying) { yield return new WaitForEndOfFrame(); }
         changePlayerVolume(1.0f);
         yield return null;
 
@@ -140,7 +153,7 @@ public class Forecaster : MonoBehaviour {
     {
         audioSource.clip = clip;
         changePlayerVolume(0.2f);
-       
+
         audioSource.Play();
         StartCoroutine(correctSoundVolumeAfterPlaying());
     }
@@ -199,25 +212,69 @@ public class Forecaster : MonoBehaviour {
     public void Animate(int state)
     {
         //weather
-        if (state == 0){
+        if (state == 1)
+        {
+            switch (_weatherVariation.weatherIndex)
+            {
+                case WeatherVariation.WeatherIndex.HEATWAVE:
+                    temp = "45";
+                    break;
+                case WeatherVariation.WeatherIndex.VERY_HOT:
+                    temp = "35";
+                    break;
+                case WeatherVariation.WeatherIndex.HOT:
+                    temp = "25";
+                    break;
+                case WeatherVariation.WeatherIndex.PERFECT:
+                    temp = "19";
+                    break;
+                case WeatherVariation.WeatherIndex.CHILLY:
+                    temp = "12";
+                    break;
+                case WeatherVariation.WeatherIndex.COLD:
+                    temp = "6";
+                    break;
+                case WeatherVariation.WeatherIndex.VERY_COLD:
+                    temp = "0";
+                    break;
+                case WeatherVariation.WeatherIndex.FREEZING:
+                    temp = "-15";
+                    break;
+                case WeatherVariation.WeatherIndex.ABSOLUTE_ZERO:
+                    temp = "-273";
+                    break;
+                default:
+                    break;
+            }
+            ecnarfText.text = temp+"C";
+            animatorEcnarf.SetInteger("temperature",int.Parse(temp));
             //weather prédiction wrong
-            if(_weatherVariation.weatherIndex != forecast)
+            if (_weatherVariation.weatherIndex != forecast)
             {
                 //anim wrong
+                animatorNarrator.SetTrigger("Sorry");
+
                 //sentence sorry
+                indexSentenceExcuse = Mathf.CeilToInt(Random.Range(0.1f, listExcuseText.Count)) -1 ;
+                animatorBubble.gameObject.GetComponentInChildren<Text>().text = listExcuseText[indexSentenceExcuse];
+                animatorBubble.SetTrigger("Spawn");
             }
 
-            if((int)precision == 3)
+            if ((int)precision == 3)
             {
                 //anim thumb up + smile
+                animatorNarrator.SetTrigger("ThumbsUp");
             }
             else
             {
                 //anim finger up
+                animatorNarrator.SetTrigger("Advice");
             }
 
             //change text with a the current sentence from listWeatherText
-
+            indexSentenceWeather = Mathf.CeilToInt(Random.Range(0.1f, listWeatherText.Count)) - 1;
+            animatorBubble.gameObject.GetComponentInChildren<Text>().text = listWeatherText[indexSentenceWeather];
+            animatorBubble.SetTrigger("Spawn");
 
         }
         else
@@ -226,17 +283,27 @@ public class Forecaster : MonoBehaviour {
             {
                 case Precision.PRECISE:
                     //change text with a random sentence from listPreciseText
+                    indexSentencePrecise = Mathf.CeilToInt(Random.Range(0.1f, listPreciseText.Count)) - 1;
+                    animatorBubble.gameObject.GetComponentInChildren<Text>().text = listPreciseText[indexSentencePrecise];
+                    animatorBubble.SetTrigger("Spawn");
                     break;
                 case Precision.FLAWED:
                     //change text with a random sentence from listFlawedText
+                    indexSentenceFlawed = Mathf.CeilToInt(Random.Range(0.1f, listFlawedText.Count)) - 1;
+                    animatorBubble.gameObject.GetComponentInChildren<Text>().text = listFlawedText[indexSentenceFlawed];
+                    animatorBubble.SetTrigger("Spawn");
                     break;
                 case Precision.RANDOM:
                     //change text with a random sentence from listRandomText
+                    indexSentenceRandom = Mathf.CeilToInt(Random.Range(0.1f, listRandomText.Count)) - 1;
+                    animatorBubble.gameObject.GetComponentInChildren<Text>().text = listRandomText[indexSentenceRandom];
+                    animatorBubble.SetTrigger("Spawn");
                     break;
                 default:
                     break;
             }
             //anim show weather
+            animatorNarrator.SetTrigger("Show");
         }
     }
 }
