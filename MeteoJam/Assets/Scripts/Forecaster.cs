@@ -9,7 +9,7 @@ public class Forecaster : MonoBehaviour {
     public float flawedUnlockDuration = 60f;
     public float randomUnlockDuration = 90f;
     public AudioSource audioSource;
-    public Text forecastText;
+    //public Text forecastText;
 
 
 
@@ -112,7 +112,7 @@ public class Forecaster : MonoBehaviour {
                 break;
         }
 
-        forecastText.text = "The incoming weather is : " + forecast;
+        //forecastText.text = "The incoming weather is : " + forecast;
 
         AudioClip clip = AudioClipManager.instance.GetForcasterWeatherById((int)forecast);
         playSound(clip);

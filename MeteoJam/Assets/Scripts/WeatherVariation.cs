@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class WeatherVariation : MonoBehaviour, EventDispatcher.IEventListener
 {
     private Forecaster _forecast;
-    public Text weatherText;
+    //public Text weatherText;
 
     [HideInInspector]
     public WeatherIndex weatherIndex = WeatherIndex.PERFECT;
@@ -54,8 +54,8 @@ public class WeatherVariation : MonoBehaviour, EventDispatcher.IEventListener
     {
         playerDeaths = 0u;
         weatherIndex = WeatherIndex.PERFECT;
-        _forecast.forecastText.gameObject.SetActive(true);
-        weatherText.gameObject.SetActive(false);
+        //_forecast.forecastText.gameObject.SetActive(true);
+        //weatherText.gameObject.SetActive(false);
         GoToRespite();
     }
 
@@ -77,15 +77,15 @@ public class WeatherVariation : MonoBehaviour, EventDispatcher.IEventListener
         _forecast.Animate((int)state);
         if (state == State.RESPITE)
         {
-            _forecast.forecastText.gameObject.SetActive(false);
-            weatherText.gameObject.SetActive(true);
+            //_forecast.forecastText.gameObject.SetActive(false);
+            //weatherText.gameObject.SetActive(true);
             state = State.WEATHER;
             duration = weatherDuration;
         }
         else if (state == State.WEATHER)
         {
-            _forecast.forecastText.gameObject.SetActive(true);
-            weatherText.gameObject.SetActive(false);
+            //_forecast.forecastText.gameObject.SetActive(true);
+            //weatherText.gameObject.SetActive(false);
             GoToRespite();
         }
 
@@ -140,7 +140,7 @@ public class WeatherVariation : MonoBehaviour, EventDispatcher.IEventListener
             firstPick = (WeatherIndex)Mathf.Max((int)weatherIndex - delta, (int)WeatherIndex.HEATWAVE);
 
         weatherIndex = firstPick;
-        weatherText.text = "The current weather is : " + weatherIndex;
+        //weatherText.text = "The current weather is : " + weatherIndex;
 
         _forecast.ComputeForecast();
     }
