@@ -28,6 +28,12 @@ public class GameManager : MonoBehaviour
 
 	public Color[] PlayerColor;
 
+    public Color lifeUp;
+    public Color lifeNeutral;
+    public Color lifeTooCold;
+    public Color lifeTooHot;
+
+
     //public List<Clothes> gameClothes;
 
     void Awake()

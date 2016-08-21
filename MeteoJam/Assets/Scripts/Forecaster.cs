@@ -11,6 +11,7 @@ public class Forecaster : MonoBehaviour
     public float randomUnlockDuration = 90f;
     public AudioSource audioSource;
     public Text forecastText;
+    public Text ecnarfText;
 
 
 
@@ -26,8 +27,8 @@ public class Forecaster : MonoBehaviour
     public Animator animatorEcnarf;
     public Animator animatorCamera;
 
-    public Text ecnarfText;
 
+    
     public List<string> listWeatherText = new List<string>() {
         "Actually, I'm not wearing any pants right now...",
         "Time to go topless!",
@@ -63,6 +64,7 @@ public class Forecaster : MonoBehaviour
         "Oops.. I did it again!",
         "But that's what I said!"
     };
+    
 
     void Awake()
     {
@@ -72,6 +74,7 @@ public class Forecaster : MonoBehaviour
     }
 
     public WeatherVariation.WeatherIndex forecast;
+    public WeatherVariation.WeatherIndex previousForecast;
     private int indexSentenceExcuse;
     private int indexSentenceWeather;
     private int indexSentencePrecise;
@@ -217,10 +220,11 @@ public class Forecaster : MonoBehaviour
 
     IEnumerator AnimateCoroutine(int state)
     {
-        Debug.Log("animate");
         //weather
         if (state == 1)
         {
+            previousForecast = _weatherVariation.weatherIndex;
+
             switch (_weatherVariation.weatherIndex)
             {
                 case WeatherVariation.WeatherIndex.HEATWAVE:
@@ -259,7 +263,6 @@ public class Forecaster : MonoBehaviour
             //weather prédiction wrong
             if (_weatherVariation.weatherIndex != forecast)
             {
-                Debug.Log("debut wrong");
                 //anim wrong
                 animatorNarrator.SetTrigger("Sorry");
 
@@ -275,7 +278,6 @@ public class Forecaster : MonoBehaviour
                     yield return 0;
 
                 }
-                Debug.Log("fin wrong");
             }
 
             if ((int)_weatherVariation.weatherIndex == 3)
@@ -292,7 +294,6 @@ public class Forecaster : MonoBehaviour
             //change text with a the current sentence from listWeatherText
             animatorBubble.gameObject.GetComponentInChildren<Text>().text = listWeatherText[(int)_weatherVariation.weatherIndex];
             animatorBubble.SetTrigger("Spawn");
-
         }
         else
         { //respite

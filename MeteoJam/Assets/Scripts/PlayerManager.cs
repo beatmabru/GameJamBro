@@ -25,7 +25,7 @@ public class PlayerManager: MonoBehaviour, EventDispatcher.IEventListener
 
     public int attackWithoutSound;
 
-    private WeatherVariation _weather;
+    private WeatherManager2 _weather;
     private MovePlayer _movePlayer;
 
     void Awake()
@@ -33,9 +33,9 @@ public class PlayerManager: MonoBehaviour, EventDispatcher.IEventListener
          AudioSource[] audiosources = GetComponents<AudioSource>();
         VoiceSource = audiosources[0];
         SFXSource = audiosources[1];
-        GameObject variationHolder = GameObject.Find("WeatherManager");
+        GameObject variationHolder = GameObject.Find("WeatherManager2");
         Debug.Assert(variationHolder != null);
-        _weather = variationHolder.GetComponent<WeatherVariation>();
+        _weather = variationHolder.GetComponent<WeatherManager2>();
         _movePlayer = GetComponent<MovePlayer>();
     }
 
@@ -133,12 +133,13 @@ public class PlayerManager: MonoBehaviour, EventDispatcher.IEventListener
     {
         AddClothesToPlayerList(PickClothesFromList(ClothesManager.instance.gameClothes));
         AddClothesToPlayerList(PickClothesFromList(ClothesManager.instance.gameClothes));
-        hud.changeColor(clothesList.Count);
+        
     }
 
     void UpdateHud()
     {
         hud.UpdateHud(clothesList.Count, lifePoints);
+        hud.changeColor(clothesList.Count);
     }
 
     void ClothesFly(Clothes thrownClothes, Vector2 throwOrientation, float force,bool isFacingRight)
@@ -257,9 +258,9 @@ public class PlayerManager: MonoBehaviour, EventDispatcher.IEventListener
     void UpdateLifepoints()
     {
         // Si période d'accalmie, la vie ne bouge pas.
-        if (_weather.state == WeatherVariation.State.RESPITE) return; 
+        //if (_weather.state == WeatherVariation.State.RESPITE) return; 
 
-        int temperature = (int)_weather.weatherIndex;
+        int temperature = (int)_weather.currentWeather;
         int ecartTemperatureVetement = Mathf.Abs(temperature - clothesList.Count);
         float facteurDegats = temperature > 3 ? GameManager.instance.baseHeatDamage : GameManager.instance.baseColdDamage;
         float damage = facteurDegats * ecartTemperatureVetement * Time.deltaTime;
@@ -287,7 +288,7 @@ public class PlayerManager: MonoBehaviour, EventDispatcher.IEventListener
         EventDispatcher.instance.ThrowEvent(playerDeath);
 
         AudioClip clip;
-        if ((int)_weather.weatherIndex < 3)
+        if ((int)_weather.currentWeather < 3)
         {
             clip = AudioClipManager.instance.GetPlayerDeathByHot(); 
         }
@@ -383,7 +384,7 @@ public class PlayerManager: MonoBehaviour, EventDispatcher.IEventListener
     }
 
     public bool HandleEvent(EventDispatcher.Event e)
-    {
+    {/*
         if( e.id == EventDispatcher.EventId.WEATHER_RESPITE_CHANGE )
         {
             hud.changeColor(clothesList.Count);
@@ -395,7 +396,7 @@ public class PlayerManager: MonoBehaviour, EventDispatcher.IEventListener
                 hud.changeColor(clothesList.Count);
             }
         }
-
+        */
         return false;
     }
 

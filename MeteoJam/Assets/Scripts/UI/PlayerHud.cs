@@ -9,70 +9,55 @@ public class PlayerHud : MonoBehaviour
     [SerializeField]
     private Image _gauge;
 
-    private WeatherVariation _weather;
+    private WeatherManager2 _weather;
     private Forecaster _forecast;
 
     void Awake()
     {
-        GameObject variationHolder = GameObject.Find("WeatherManager");
+        GameObject variationHolder = GameObject.Find("WeatherManager2");
         Debug.Assert(variationHolder != null);
-        _weather = variationHolder.GetComponent<WeatherVariation>();
+        _weather = variationHolder.GetComponent<WeatherManager2>();
         _forecast = variationHolder.GetComponent<Forecaster>();
     }
 
     // Update is called once per frame
     public void UpdateHud (int clothes, float lifePoints)
     {
-        if(_weather.state==WeatherVariation.State.WEATHER)
-        {
-            _clothCount.text = clothes + " / " + (int)_weather.weatherIndex;
-        }
+        //if(_weather.currentWeather == WeatherVariation.State.WEATHER)
+        //{
+        _clothCount.text = clothes + " / " + (int)_weather.currentWeather;
+        /*}
         else
         {
             _clothCount.text = clothes + " / " + +(int)_forecast.forecast + "?";
-        }
+        }*/
 
         float newScaleX = lifePoints / 100  ;
         _gauge.transform.localScale = new Vector3(newScaleX, 1, 1);
     }
 
-    //lifebar alpha
-    private static readonly byte alphaLifeBar = 255;
-    private static readonly Color32 lifeUp = new Color32(151, 253, 35, alphaLifeBar);
-    private static readonly Color32 respite = new Color32(222, 223, 165, alphaLifeBar);
-    private static readonly Color32 tooHot = new Color32(211, 47, 47, alphaLifeBar);
-    private static readonly Color32 tooCold = new Color32(25, 118, 210, alphaLifeBar);
-    // private static readonly byte alphaLifeBar = 200;
-
     public void changeColor(int clothes)
     {
-        if (_weather.state == WeatherVariation.State.RESPITE)
-        {
-            _gauge.GetComponent<Image>().color = respite;
-            return;
-        }
-
-        WeatherVariation.WeatherIndex index = _weather.weatherIndex;
+        WeatherManager2.WeatherIndex index = _weather.currentWeather;
         Color32 color;
 
-        if (WeatherVariation.WeatherIndex.PERFECT == index)
+        if (index == WeatherManager2.WeatherIndex.PERFECT)
         {
             if(clothes >= 1 && clothes <= 5)
-                color = lifeUp;
+                color = GameManager.instance.lifeUp;
             else
-                color = respite;
+                color = GameManager.instance.lifeNeutral;
         }
         else
         {
             if (clothes < (int)index)
-                color = tooCold;
+                color = GameManager.instance.lifeTooCold;
             else if (clothes == (int)index)
-                color = respite;
+                color = GameManager.instance.lifeNeutral;
             else
-                color = tooHot;
+                color = GameManager.instance.lifeTooHot;
         }
         
-        _gauge.GetComponent<Image>().color = color;
+        _gauge.GetComponent<Image>().color = Color.Lerp(_gauge.GetComponent<Image>().color, color,5*Time.deltaTime);
     }
-
 }

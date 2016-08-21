@@ -65,8 +65,7 @@ public class IngameManager : MonoBehaviour {
             if (player.activeSelf) alivePlayers.Add(player);
         }
 
-
-        if(alivePlayers.Count == 1 && !surviveAloneStarted)
+        if(alivePlayers.Count <= 1 && !surviveAloneStarted)
         {
             timerSurviveAlone = 0f;
             surviveAloneStarted = true;

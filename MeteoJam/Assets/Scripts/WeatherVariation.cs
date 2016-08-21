@@ -11,6 +11,8 @@ public class WeatherVariation : MonoBehaviour, EventDispatcher.IEventListener
     public WeatherIndex weatherIndex = WeatherIndex.PERFECT;
     public WeatherIndex weatherMax = WeatherIndex.VERY_COLD;
 
+    public Animator weatherAnimator;
+
     public enum State
     {
         WEATHER,
@@ -59,6 +61,12 @@ public class WeatherVariation : MonoBehaviour, EventDispatcher.IEventListener
         GoToRespite();
     }
 
+    void OnGUI()
+    {
+        GUILayout.Label("weatherIndex "+ weatherIndex);
+        GUILayout.Label("_forecast.forecast "+ _forecast.forecast);
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -81,6 +89,8 @@ public class WeatherVariation : MonoBehaviour, EventDispatcher.IEventListener
             //weatherText.gameObject.SetActive(true);
             state = State.WEATHER;
             duration = weatherDuration;
+            ChangeEffect();
+            Debug.Log("ChangeEffect :" + weatherIndex);
         }
         else if (state == State.WEATHER)
         {
@@ -92,11 +102,12 @@ public class WeatherVariation : MonoBehaviour, EventDispatcher.IEventListener
         EventDispatcher.Event weatherChange = new EventDispatcher.Event(EventDispatcher.EventId.WEATHER_RESPITE_CHANGE, (object)state);
         EventDispatcher.instance.ThrowEvent(weatherChange);
 
-        Debug.Assert(duration > 0f);
+        //Debug.Assert(duration > 0f);
     }
 
     private void GoToRespite()
     {
+        weatherAnimator.SetInteger("temperature", 19);
         state = State.RESPITE;
         duration = respiteDuration;
         PickNextWeather();
@@ -140,7 +151,8 @@ public class WeatherVariation : MonoBehaviour, EventDispatcher.IEventListener
             firstPick = (WeatherIndex)Mathf.Max((int)weatherIndex - delta, (int)WeatherIndex.HEATWAVE);
 
         weatherIndex = firstPick;
-        //weatherText.text = "The current weather is : " + weatherIndex;
+
+        
 
         _forecast.ComputeForecast();
     }
@@ -153,5 +165,47 @@ public class WeatherVariation : MonoBehaviour, EventDispatcher.IEventListener
             TryUnlock();
         }
         return false;
+    }
+
+    private void ChangeEffect()
+    {
+        int temp = 19;
+
+        switch (weatherIndex)
+        {
+            case WeatherVariation.WeatherIndex.HEATWAVE:
+                temp = 45;
+                break;
+            case WeatherVariation.WeatherIndex.VERY_HOT:
+                temp = 5;
+                break;
+            case WeatherVariation.WeatherIndex.HOT:
+                temp = 25;
+                break;
+            case WeatherVariation.WeatherIndex.PERFECT:
+                temp = 19;
+                break;
+            case WeatherVariation.WeatherIndex.CHILLY:
+                temp = 12;
+                break;
+            case WeatherVariation.WeatherIndex.COLD:
+                temp = 6;
+                break;
+            case WeatherVariation.WeatherIndex.VERY_COLD:
+                temp = 0;
+                break;
+            case WeatherVariation.WeatherIndex.FREEZING:
+                temp = -15;
+                break;
+            case WeatherVariation.WeatherIndex.ABSOLUTE_ZERO:
+                temp = -273;
+                break;
+            default:
+                break;
+        }
+        Debug.Log("ChangeEffect");
+        weatherAnimator.SetInteger("temperature", temp);
+
+        //weatherText.text = "The current weather is : " + weatherIndex;
     }
 }
