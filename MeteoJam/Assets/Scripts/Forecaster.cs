@@ -211,6 +211,13 @@ public class Forecaster : MonoBehaviour
 
     public void Animate(int state)
     {
+        StopAllCoroutines();
+        StartCoroutine(AnimateCoroutine(state));
+    }
+
+    IEnumerator AnimateCoroutine(int state)
+    {
+        Debug.Log("animate");
         //weather
         if (state == 1)
         {
@@ -246,23 +253,29 @@ public class Forecaster : MonoBehaviour
                 default:
                     break;
             }
-            ecnarfText.text = temp+"C";
-            animatorEcnarf.SetInteger("temperature",int.Parse(temp));
-
-            Debug.Log("début");
+            ecnarfText.text = temp + "C";
+            animatorEcnarf.SetInteger("temperature", int.Parse(temp));
 
             //weather prédiction wrong
             if (_weatherVariation.weatherIndex != forecast)
             {
-                Debug.Log("wrong");
+                Debug.Log("debut wrong");
                 //anim wrong
                 animatorNarrator.SetTrigger("Sorry");
 
                 //sentence sorry
-                indexSentenceExcuse = Mathf.CeilToInt(Random.Range(0.1f, listExcuseText.Count)) -1 ;
+                indexSentenceExcuse = Mathf.CeilToInt(Random.Range(0.1f, listExcuseText.Count)) - 1;
                 animatorBubble.gameObject.GetComponentInChildren<Text>().text = listExcuseText[indexSentenceExcuse];
                 animatorBubble.SetTrigger("Spawn");
-                AnimationNarratorDelayCoroutine();
+
+                float delay = 5f;
+                while(delay>0)
+                {
+                    delay -= Time.deltaTime;
+                    yield return 0;
+
+                }
+                Debug.Log("fin wrong");
             }
 
             if ((int)_weatherVariation.weatherIndex == 3)
@@ -283,7 +296,6 @@ public class Forecaster : MonoBehaviour
         }
         else
         { //respite
-            //animatorNarrator.SetTrigger("Noise");
             switch (precision)
             {
                 case Precision.PRECISE:
@@ -310,16 +322,5 @@ public class Forecaster : MonoBehaviour
             //anim show weather
             animatorNarrator.SetTrigger("Show");
         }
-    }
-
-    IEnumerator AnimationNarratorDelayCoroutine()
-    {
-        float delay = 5f;
-        while(delay>0)
-        {
-            delay -= Time.deltaTime;
-            yield return 0;
-        }
-        
     }
 }
