@@ -11,15 +11,20 @@ public class IngameManager : MonoBehaviour {
     private List<GameObject> players = new List<GameObject>();
     public Text winText;
     public Text gameTimeText;
+    public GameObject _endScreen;
     public bool gameOver;
     float timerSurviveAlone;
     bool surviveAloneStarted = false;
+
+    // On gère deux compteurs de temps, dont l'un
+    // qu'on arrête au moment du game over.
     public float gameTime;
-	// Use this for initialization
-	void Start () {
+    public float timeAtGameOver;
+
+    // Use this for initialization
+    void Start () {
         instance = this;
-        winText.gameObject.SetActive(false);
-        gameTimeText.gameObject.SetActive(false);
+        _endScreen.SetActive(false);
         gameTime = 0f;
         for (int i = 1; i < 5; i++)
         {
@@ -35,10 +40,18 @@ public class IngameManager : MonoBehaviour {
             SceneManager.LoadScene("IngameScene");
         }
 
+        // Restart possible après game over + 4 secondes
+        bool aPlayerPressesJump = Input.GetButtonDown("Jump1") || Input.GetButtonDown("Jump2") || Input.GetButtonDown("Jump3") || Input.GetButtonDown("Jump4");
+        bool fourSecondsHavePassedSinceGameOver = (gameTime - timeAtGameOver) > 4f;
+        if (fourSecondsHavePassedSinceGameOver && aPlayerPressesJump)
+        {
+            SceneManager.LoadScene("IngameScene");
+        }
+
+        gameTime += Time.deltaTime;
         if (!gameOver)
-            gameTime += Time.deltaTime;
-        // Vérification du nombre d ejoueurs en vie
-        //int deathCount = 0;
+            timeAtGameOver += Time.deltaTime;
+        // Vérification du nombre de joueurs en vie
         List<GameObject> alivePlayers = new List<GameObject>();
         foreach(GameObject player in players)
         {
@@ -61,30 +74,22 @@ public class IngameManager : MonoBehaviour {
                 winner.VoiceSource.Play();
                 winner.LaunchWinAnimation();
                 gameOver = true;
-                winText.text = "Congratulations " + alivePlayers[0].name;
-                winText.gameObject.SetActive(true);
-
-                gameTimeText.text = "You survived for "+gameTime+" seconds.";
-                gameTimeText.gameObject.SetActive(true);
+                winText.text = alivePlayers[0].name+" wins";
+                string truncatedTime = (timeAtGameOver + "").Substring(0, 5);
+                gameTimeText.text = "You survived for "+ truncatedTime + " seconds";
+                _endScreen.SetActive(true);
             }
             else if (alivePlayers.Count == 0)
             {
                 gameOver = true;
                 winText.text = "Sadness and Sorrow ";
-                winText.gameObject.SetActive(true);
+                
+                string truncatedTime = (timeAtGameOver+"").Substring(0, 5);
+                gameTimeText.text = "You've played for " + truncatedTime + " seconds";
+                _endScreen.SetActive(true);
 
-                gameTimeText.text = "You've played for " + gameTime + " seconds.";
-                gameTimeText.gameObject.SetActive(true);
             }
         }
 	}
-
-    void OnGUI()
-    {
-        GUIStyle ballRun = new GUIStyle();
-        ballRun.normal.textColor = Color.black;
-        GUI.Label(new Rect(50, 10, 100, 20), gameTime.ToString(), ballRun);
-    }
-
    
 }

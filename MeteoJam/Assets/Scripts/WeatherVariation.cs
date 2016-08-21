@@ -5,7 +5,6 @@ using UnityEngine.UI;
 public class WeatherVariation : MonoBehaviour
 {
     private Forecaster _forecast;
-    public static WeatherVariation instance;
     public Text weatherText;
 
     [HideInInspector]
@@ -44,7 +43,6 @@ public class WeatherVariation : MonoBehaviour
 
     void Awake()
     {
-        instance = this;
         _forecast = GetComponent<Forecaster>();
     }
         

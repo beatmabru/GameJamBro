@@ -70,7 +70,7 @@ public class ClothesDetection : MonoBehaviour {
         {
             PlayerManager playerManager = col.GetComponent<PlayerManager>();
 
-            if (ignoredPlayers.IndexOf(playerManager) != 0)
+            if (ignoredPlayers.IndexOf(playerManager) != 0 && !playerManager.deathTriggered)
             {
                 playerManager.AddClothesToPlayerList(_clothes);
                 playerManager.StartThrowCooldown();
