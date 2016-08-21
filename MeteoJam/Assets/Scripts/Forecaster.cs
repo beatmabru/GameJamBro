@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine.UI;
 
 public class Forecaster : MonoBehaviour {
@@ -16,6 +17,42 @@ public class Forecaster : MonoBehaviour {
         RANDOM
     }
 
+    public List<string> listWeatherText = new List<string>() {
+        "Actually, I'm not wearing any pants right now...",
+        "Time to go topless!",
+        "Our advice? A baseball cap and a cool sweater",
+        "Perfect weather for a healthy stroll in the park!",
+        "Take your jacket before going out!",
+        "Don't forget the hood yo!",
+        "Atcha! Where are my scarf and gloves?",
+        "Put on all your things or freeze to death!",
+        "Who turned the sun off?!"
+    };
+
+    public List<string> listPreciseText = new List<string>() {
+        "My Name is Steven Sbatar and welcome to the Weather Channel!",
+        "We're very confident in our forecasts",
+        "100% accurate"
+    };
+
+    public List<string> listFlawedText = new List<string>() {
+        "Meteor shower?! ... Just kidding!!",
+        "Winter is comming, or is it?"
+    };
+
+    public List<string> listRandomText = new List<string>() {
+        "Some heavy rain or a happy sky? ... May be?",
+        "Who's playing with my climat-tact?"
+    };
+
+    public List<string> listExcuseText = new List<string>() {
+        "It never happened before...",
+        "That damned intern again...",
+        "Someone hacked our sattelite",
+        "Oops.. I did it again!",
+        "But that's what I said!"
+    };
+
     void Awake()
     {
         _weatherVariation = GetComponent<WeatherVariation>();
@@ -25,7 +62,7 @@ public class Forecaster : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-       
+     
     }
 
     // Update is called once per frame
