@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class Forecaster : MonoBehaviour {
     private WeatherVariation _weatherVariation;
@@ -7,6 +8,7 @@ public class Forecaster : MonoBehaviour {
     public float flawedUnlockDuration = 60f;
     public float randomUnlockDuration = 90f;
     private AudioSource audioSource;
+    public Text forecastText;
 
     public enum Precision
     {
@@ -33,10 +35,12 @@ public class Forecaster : MonoBehaviour {
         TryUnlock();
     }
 
+    /*
     void OnGUI()
     {
         GUI.Label(new Rect(10, 50, 200, 20), "Current Forecast:" + forecast.ToString());
     }
+    */
 
     public void ComputeForecast()
     {
@@ -68,12 +72,11 @@ public class Forecaster : MonoBehaviour {
                 break;
         }
 
+        forecastText.text = "The incoming weather is : " + forecast;
+
         audioSource.clip = AudioClipManager.instance.GetForcasterWeatherById((int)forecast);
         audioSource.Play();
-
         StartCoroutine(playnarratorResult(forecast == _weatherVariation.weatherIndex)); 
-
-        
 
     }
 
@@ -82,6 +85,7 @@ public class Forecaster : MonoBehaviour {
         yield return new WaitForSeconds(3);
         audioSource.clip = AudioClipManager.instance.GetForcasterResult(wasTrue);
         audioSource.Play();
+
     }
 
     private WeatherVariation.WeatherIndex VariationWeather(int min, int max)

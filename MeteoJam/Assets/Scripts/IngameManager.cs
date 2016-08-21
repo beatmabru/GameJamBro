@@ -28,10 +28,10 @@ public class IngameManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        /*if(Input.GetButtonDown("ResetGame"))
+        if (Input.GetButtonDown("ResetGame"))
         {
             SceneManager.LoadScene("IngameScene");
-        } */
+        }
 
         if (!gameOver)
             gameTime += Time.deltaTime;
