@@ -18,7 +18,7 @@ public class PlayerHud : MonoBehaviour
     }
 
     //lifebar alpha
-    private static readonly byte alphaLifeBar = 255;
+    private static readonly byte alphaLifeBar = 180;
     private static readonly Color32 lifeUp = new Color32(139, 195, 74, alphaLifeBar);
     private static readonly Color32 lifeStill = new Color32(255, 255, 255, alphaLifeBar);
     private static readonly Color32 respite = new Color32(180, 180, 180, alphaLifeBar);
