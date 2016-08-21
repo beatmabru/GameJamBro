@@ -6,6 +6,7 @@ public class Forecaster : MonoBehaviour {
     public Precision precision = Precision.PRECISE;
     public float flawedUnlockDuration = 60f;
     public float randomUnlockDuration = 90f;
+    private AudioSource audioSource;
 
     public enum Precision
     {
@@ -17,6 +18,7 @@ public class Forecaster : MonoBehaviour {
     void Awake()
     {
         _weatherVariation = GetComponent<WeatherVariation>();
+        audioSource = GetComponent<AudioSource>(); 
     }
 
     private WeatherVariation.WeatherIndex forecast;
@@ -65,6 +67,21 @@ public class Forecaster : MonoBehaviour {
             default:
                 break;
         }
+
+        audioSource.clip = AudioClipManager.instance.GetForcasterWeatherById((int)forecast);
+        audioSource.Play();
+
+        StartCoroutine(playnarratorResult(forecast == _weatherVariation.weatherIndex)); 
+
+        
+
+    }
+
+    IEnumerator playnarratorResult(bool wasTrue)
+    {
+        yield return new WaitForSeconds(3);
+        audioSource.clip = AudioClipManager.instance.GetForcasterResult(wasTrue);
+        audioSource.Play();
     }
 
     private WeatherVariation.WeatherIndex VariationWeather(int min, int max)

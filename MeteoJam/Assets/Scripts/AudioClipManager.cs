@@ -19,8 +19,13 @@ public class AudioClipManager : MonoBehaviour {
 
     List<AudioClip> listForcasterWrongprediction = new List<AudioClip>();
     List<AudioClip> listForcasterGoodprediction = new List<AudioClip>();
-   // List<AudioClip> list
- 
+    AudioClip listForcasterprediction;
+    AudioClip forcasterHot;
+    AudioClip forcasterCold;
+    List<AudioClip> listForcasterWeathers = new List<AudioClip>();
+    //List<AudioClip> listForcasterHotter = new List<AudioClip>();
+    //List<AudioClip> listForcasterColder = new List<AudioClip>();
+
 
     // Use this for initialization
 
@@ -58,10 +63,60 @@ public class AudioClipManager : MonoBehaviour {
                 listPlayerPush.Add(clip);
             }
         }
+        foreach (AudioClip clip in narratorAudioClip)
+        {
+            if (clip.name.Contains("wrongprediction"))
+            {
+                listForcasterWrongprediction.Add(clip);
+            }
+            else if (clip.name.Contains("goodprediction"))
+            {
+                listForcasterGoodprediction.Add(clip);
+            }
+            else if(clip.name == "predictions-andtheweatheris")
+            {
+                listForcasterprediction = clip;
+            }
+            else if (clip.name == "tooHot")
+            {
+                forcasterHot = clip;
+            }
+            else if (clip.name == "coldd")
+            {
+                forcasterCold = clip;
+            }
+            else if(clip.name.Contains("forcast"))
+            {
+                listForcasterWeathers.Add(clip);
+            }
+        }
+        
     }
 
     void Start () {
         
+    }
+
+    public AudioClip GetForcasterWeatherById(int id)
+    {
+        return listForcasterWeathers[id];
+    }
+
+    public AudioClip GetForcasterResult(bool wasTrue)
+    {
+        AudioClip returnVal;
+        if (wasTrue)
+        {
+            int randomIndex = Mathf.CeilToInt(Random.Range(0.01f, listForcasterGoodprediction.Count)) - 1;
+            returnVal =  listForcasterGoodprediction[randomIndex];
+        }
+        else
+        {
+            int randomIndex = Mathf.CeilToInt(Random.Range(0.01f, listForcasterWrongprediction.Count)) - 1;
+            returnVal= listForcasterWrongprediction[randomIndex];
+        }
+        return returnVal;
+       
     }
 
     public AudioClip GetPlayerDeathByCold()
