@@ -86,15 +86,15 @@ public class MovePlayer : MonoBehaviour
         //Debug.DrawLine(transform.position, transform.position - Vector3.up * 1f, Color.red);
 
         float playerWidth = _rigidbody.gameObject.GetComponent<BoxCollider2D>().size.x;
-        RaycastHit2D[] hitsLeft = Physics2D.RaycastAll(new Vector2(transform.position.x - 0.45f*playerWidth, transform.position.y), -Vector2.up, 1f);
-        RaycastHit2D[] hitsRight = Physics2D.RaycastAll(new Vector2(transform.position.x + 0.45f*playerWidth, transform.position.y), -Vector2.up, 1f);
+        RaycastHit2D[] hitsLeft = Physics2D.RaycastAll(new Vector2(transform.position.x - 0.45f*playerWidth, transform.position.y), -Vector2.up, 0.05f);
+        RaycastHit2D[] hitsRight = Physics2D.RaycastAll(new Vector2(transform.position.x + 0.45f*playerWidth, transform.position.y), -Vector2.up, 0.05f);
         //        List<RaycastHit2D> hits;
         RaycastHit2D[] hits = new RaycastHit2D[hitsLeft.Length + hitsRight.Length];
         hitsLeft.CopyTo(hits, 0);
         hitsRight.CopyTo(hits, hitsLeft.Length);
 
-        //Debug.DrawLine(new Vector3(transform.position.x - 0.45f * playerWidth, transform.position.y, 0f), new Vector3(transform.position.x - 0.45f * playerWidth, transform.position.y, 0f) - Vector3.up * 1f, Color.red);
-        //Debug.DrawLine(new Vector3(transform.position.x + 0.45f * playerWidth, transform.position.y, 0f), new Vector3(transform.position.x + 0.45f * playerWidth, transform.position.y, 0f) - Vector3.up * 1f, Color.red);
+        //Debug.DrawLine(new Vector3(transform.position.x - 0.45f * playerWidth, transform.position.y, 0f), new Vector3(transform.position.x - 0.45f * playerWidth, transform.position.y, 0f) - Vector3.up * 0.02f, Color.red);
+        //Debug.DrawLine(new Vector3(transform.position.x + 0.45f * playerWidth, transform.position.y, 0f), new Vector3(transform.position.x + 0.45f * playerWidth, transform.position.y, 0f) - Vector3.up * 0.02f, Color.red);
 
         if (hits.Length>0)
         {
