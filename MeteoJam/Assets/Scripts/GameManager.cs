@@ -26,6 +26,8 @@ public class GameManager : MonoBehaviour
 
     public float timeSurviveAlone = 3f;
 
+	public Color[] PlayerColor;
+
     //public List<Clothes> gameClothes;
 
     void Awake()

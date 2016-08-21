@@ -29,6 +29,11 @@ public class AudioClipManager : MonoBehaviour {
     public AudioClip equipSFX;
     public AudioClip throwCloth;
 
+	public PlayerManager player1;
+	public PlayerManager player2;
+	public PlayerManager player3;
+	public PlayerManager player4;
+
 
     // Use this for initialization
 

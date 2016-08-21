@@ -15,13 +15,15 @@ public class IngameManager : MonoBehaviour {
     public bool gameOver;
     float timerSurviveAlone;
     bool surviveAloneStarted = false;
+
+    // On gère deux compteurs de temps, dont l'un
+    // qu'on arrête au moment du game over.
     public float gameTime;
     public float timeAtGameOver;
+
     // Use this for initialization
     void Start () {
         instance = this;
-        //winText.gameObject.SetActive(false);
-        //gameTimeText.gameObject.SetActive(false);
         _endScreen.SetActive(false);
         gameTime = 0f;
         for (int i = 1; i < 5; i++)
@@ -73,34 +75,21 @@ public class IngameManager : MonoBehaviour {
                 winner.LaunchWinAnimation();
                 gameOver = true;
                 winText.text = alivePlayers[0].name+" wins";
-                //winText.gameObject.SetActive(true);
                 string truncatedTime = (timeAtGameOver + "").Substring(0, 5);
                 gameTimeText.text = "You survived for "+ truncatedTime + " seconds";
                 _endScreen.SetActive(true);
-                //gameTimeText.gameObject.SetActive(true);
             }
             else if (alivePlayers.Count == 0)
             {
                 gameOver = true;
                 winText.text = "Sadness and Sorrow ";
-                //winText.gameObject.SetActive(true);
-
-                // On utilise un new string au moment du game over pour continuer à compter le temps
+                
                 string truncatedTime = (timeAtGameOver+"").Substring(0, 5);
                 gameTimeText.text = "You've played for " + truncatedTime + " seconds";
                 _endScreen.SetActive(true);
-                //gameTimeText.gameObject.SetActive(true);
+
             }
         }
 	}
-
-    /*
-    void OnGUI()
-    {
-        GUIStyle ballRun = new GUIStyle();
-        ballRun.normal.textColor = Color.black;
-        GUI.Label(new Rect(50, 10, 100, 20), gameTime.ToString(), ballRun);
-    }
-    */
    
 }
