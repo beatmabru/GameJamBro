@@ -246,7 +246,7 @@ public class PlayerManager: MonoBehaviour, EventDispatcher.IEventListener
     void UpdateLifepoints()
     {
         // Si période d'accalmie, la vie ne bouge pas.
-        //if (WeatherVariation.instance.state == WeatherVariation.State.RESPITE) return; 
+        if (_weather.state == WeatherVariation.State.RESPITE) return; 
 
         int temperature = (int)_weather.weatherIndex;
         int ecartTemperatureVetement = Mathf.Abs(temperature - clothesList.Count);

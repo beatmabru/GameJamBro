@@ -10,18 +10,28 @@ public class PlayerHud : MonoBehaviour
     private Image _gauge;
 
     private WeatherVariation _weather;
+    private Forecaster _forecast;
 
     void Awake()
     {
         GameObject variationHolder = GameObject.Find("WeatherManager");
         Debug.Assert(variationHolder != null);
         _weather = variationHolder.GetComponent<WeatherVariation>();
+        _forecast = variationHolder.GetComponent<Forecaster>();
     }
 
     // Update is called once per frame
     public void UpdateHud (int clothes, float lifePoints)
     {
-        _clothCount.text = clothes + " / " +(int)_weather.weatherIndex;
+        if(_weather.state==WeatherVariation.State.WEATHER)
+        {
+            _clothCount.text = clothes + " / " + (int)_weather.weatherIndex;
+        }
+        else
+        {
+            _clothCount.text = clothes + " / " + +(int)_forecast.forecast + "?";
+        }
+
         float newScaleX = lifePoints / 100  ;
         _gauge.transform.localScale = new Vector3(newScaleX, 1, 1);
     }
