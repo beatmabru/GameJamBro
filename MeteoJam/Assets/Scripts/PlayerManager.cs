@@ -22,6 +22,14 @@ public class PlayerManager: MonoBehaviour, EventDispatcher.IEventListener
     public AudioSource VoiceSource;
     public AudioSource SFXSource;
     private Animator _playerAnimator;
+    private WeatherVariation _weather;
+
+    void Awake()
+    {
+        GameObject variationHolder = GameObject.Find("WeatherManager");
+        Debug.Assert(variationHolder != null);
+        _weather = variationHolder.GetComponent<WeatherVariation>();
+    }
 
     // Use this for initialization
     void Start () {
@@ -149,7 +157,7 @@ public class PlayerManager: MonoBehaviour, EventDispatcher.IEventListener
         // Si période d'accalmie, la vie ne bouge pas.
         //if (WeatherVariation.instance.state == WeatherVariation.State.RESPITE) return; 
 
-        int temperature = (int) WeatherVariation.instance.weatherIndex;
+        int temperature = (int)_weather.weatherIndex;
         int ecartTemperatureVetement = Mathf.Abs(temperature - clothesList.Count);
         float facteurDegats = temperature > 3 ? GameManager.instance.baseHeatDamage : GameManager.instance.baseColdDamage;
         float damage = facteurDegats * ecartTemperatureVetement * Time.deltaTime;
@@ -174,7 +182,7 @@ public class PlayerManager: MonoBehaviour, EventDispatcher.IEventListener
     {
         deathTriggered = true;
         AudioClip clip;
-        if ((int)WeatherVariation.instance.weatherIndex < 3)
+        if ((int)_weather.weatherIndex < 3)
         {
             clip = AudioClipManager.instance.GetPlayerDeathByHot(); 
         }

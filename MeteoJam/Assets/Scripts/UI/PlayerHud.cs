@@ -9,10 +9,19 @@ public class PlayerHud : MonoBehaviour
     [SerializeField]
     private Image _gauge;
 
+    private WeatherVariation _weather;
+
+    void Awake()
+    {
+        GameObject variationHolder = GameObject.Find("WeatherManager");
+        Debug.Assert(variationHolder != null);
+        _weather = variationHolder.GetComponent<WeatherVariation>();
+    }
+
     // Update is called once per frame
     public void UpdateHud (int clothes, float lifePoints)
     {
-        _clothCount.text = clothes + " / " +(int) WeatherVariation.instance.weatherIndex;
+        _clothCount.text = clothes + " / " +(int)_weather.weatherIndex;
         float newScaleX = lifePoints / 100  ;
         _gauge.transform.localScale = new Vector3(newScaleX, 1, 1);
     }
@@ -28,13 +37,13 @@ public class PlayerHud : MonoBehaviour
 
     public void changeColor(int clothes)
     {
-        if (WeatherVariation.instance.state == WeatherVariation.State.RESPITE)
+        if (_weather.state == WeatherVariation.State.RESPITE)
         {
             _gauge.GetComponent<Image>().color = respite;
             return;
         }
 
-        WeatherVariation.WeatherIndex index = WeatherVariation.instance.weatherIndex;
+        WeatherVariation.WeatherIndex index = _weather.weatherIndex;
         Color32 color;
 
         if (WeatherVariation.WeatherIndex.PERFECT == index)
