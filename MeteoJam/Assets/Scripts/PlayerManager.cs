@@ -8,8 +8,7 @@ public class PlayerManager: MonoBehaviour, EventDispatcher.IEventListener
     public List<Clothes> clothesList;
     [HideInInspector]
     public GameObject _attackHitbox;
-    [SerializeField]
-    private float lifePoints;
+    public float lifePoints;
 
     public PlayerHud hud;
     [HideInInspector]
@@ -23,14 +22,31 @@ public class PlayerManager: MonoBehaviour, EventDispatcher.IEventListener
     public AudioSource VoiceSource;
     public AudioSource SFXSource;
     private Animator _playerAnimator;
+
     public int attackWithoutSound;
+
+    private WeatherVariation _weather;
 
     void Awake()
     {
-        AudioSource[] audiosources = GetComponents<AudioSource>();
+         AudioSource[] audiosources = GetComponents<AudioSource>();
         VoiceSource = audiosources[0];
         SFXSource = audiosources[1];
+        GameObject variationHolder = GameObject.Find("WeatherManager");
+        Debug.Assert(variationHolder != null);
+        _weather = variationHolder.GetComponent<WeatherVariation>();
     }
+
+	public List<SpriteRenderer> listSpriteScarf = new List<SpriteRenderer>();
+	public List<SpriteRenderer> listSpriteGlove = new List<SpriteRenderer>();
+	public List<SpriteRenderer> listSpriteHat = new List<SpriteRenderer>();
+	public List<SpriteRenderer> listSpriteBody = new List<SpriteRenderer>();
+	public List<SpriteRenderer> listSpriteLeftArm = new List<SpriteRenderer>();
+	public List<SpriteRenderer> listSpriteRightArm = new List<SpriteRenderer>();
+	public List<SpriteRenderer> listSpriteLeftLegs = new List<SpriteRenderer>();
+	public List<SpriteRenderer> listSpriteRightLegs = new List<SpriteRenderer>();
+	public List<SpriteRenderer> listSpritePants = new List<SpriteRenderer>();
+	//public List<SpriteRenderer> listSpriteHair = new List<SpriteRenderer>();
 
     // Use this for initialization
     void Start () {
@@ -38,11 +54,44 @@ public class PlayerManager: MonoBehaviour, EventDispatcher.IEventListener
         _attackHitbox = transform.Find("HitBoxAttack").gameObject;
         EventDispatcher.instance.listeners.Add(this);
         movePlayer = GetComponentInParent<MovePlayer>();
-        SetFirstClothes();
+		InitClotheColor ();
+		SetFirstClothes();
         lifePoints = GameManager.instance.baseLifepoints;
         _playerAnimator = GetComponent<Animator>();
+
     }
 
+	void InitClotheColor()
+	{
+		foreach (SpriteRenderer renderer in listSpriteScarf) {
+			renderer.color = GameManager.instance.PlayerColor [playerIndex-1];
+		}
+		foreach (SpriteRenderer renderer in listSpriteGlove) {
+			renderer.color = GameManager.instance.PlayerColor [playerIndex-1];
+		}
+		foreach (SpriteRenderer renderer in listSpriteHat) {
+			renderer.color = GameManager.instance.PlayerColor [playerIndex-1];
+		}
+		foreach (SpriteRenderer renderer in listSpriteBody) {
+			renderer.color = GameManager.instance.PlayerColor [playerIndex-1];
+		}
+		foreach (SpriteRenderer renderer in listSpriteLeftArm) {
+			renderer.color = GameManager.instance.PlayerColor [playerIndex-1];
+		}
+		foreach (SpriteRenderer renderer in listSpriteRightArm) {
+			renderer.color = GameManager.instance.PlayerColor [playerIndex-1];
+		}
+		foreach (SpriteRenderer renderer in listSpriteLeftLegs) {
+			renderer.color = GameManager.instance.PlayerColor [playerIndex-1];
+		}
+		foreach (SpriteRenderer renderer in listSpriteRightLegs) {
+			renderer.color = GameManager.instance.PlayerColor [playerIndex-1];
+		}
+		foreach (SpriteRenderer renderer in listSpritePants) {
+			renderer.color = GameManager.instance.PlayerColor [playerIndex-1];
+		}
+
+	}
     // Update is called once per frame
     void Update()
     {
@@ -124,9 +173,12 @@ public class PlayerManager: MonoBehaviour, EventDispatcher.IEventListener
         _playerAnimator = GetComponent<Animator>();
         _playerAnimator.SetTrigger("Dress");
 
+		RenderCorrectClotheSprite (clothes);
+
         EventDispatcher.Event getClothes = new EventDispatcher.Event(EventDispatcher.EventId.CLOTHES_GET, null);
         EventDispatcher.instance.ThrowEvent(getClothes);
     }
+
 
     void playVoiceAccordingToOtherPlayer()
     {
@@ -135,6 +187,51 @@ public class PlayerManager: MonoBehaviour, EventDispatcher.IEventListener
             VoiceSource.Play();
         }
     }
+
+	void RenderCorrectClotheSprite(Clothes clothe)
+	{
+		
+		//Debug.Log ("player : " + name + " clothes : " + clothe.clotheName);
+		switch (clothe.type) {
+		case Clothes.ClothesType.ACCESSORY:
+			if (clothe.clotheName == "scarf") {
+				listSpriteScarf [0].gameObject.SetActive (true);
+			} else {
+				listSpriteGlove [0].gameObject.SetActive (true);
+				listSpriteGlove [1].gameObject.SetActive (true);
+			}
+			break;
+		case Clothes.ClothesType.BODY:
+			if (clothe.clotheName == "body_01") {
+				listSpriteBody [0].gameObject.SetActive (true);
+				listSpriteLeftArm [0].gameObject.SetActive (true);
+				listSpriteRightArm [0].gameObject.SetActive (true);
+			} else if (clothe.clotheName == "body_02") {
+				listSpriteBody [1].gameObject.SetActive (true);
+				listSpriteLeftArm [1].gameObject.SetActive (true);
+				listSpriteRightArm [1].gameObject.SetActive (true);
+			}
+			break;
+		case Clothes.ClothesType.HEAD:
+			if (clothe.clotheName == "Hat_01") {
+				listSpriteHat [0].gameObject.SetActive (true);
+			} else if (clothe.clotheName == "Hat_02") {
+				listSpriteHat [1].gameObject.SetActive (true);
+			}
+			break;
+		case Clothes.ClothesType.LEG:
+			if (clothe.clotheName == "leg_01") {
+				listSpritePants [0].gameObject.SetActive (true);
+				listSpriteLeftLegs [0].gameObject.SetActive (true);
+				listSpriteRightLegs [0].gameObject.SetActive (true);
+			} else if (clothe.clotheName == "leg_02") {
+				listSpritePants [1].gameObject.SetActive (true);
+				listSpriteLeftLegs [1].gameObject.SetActive (true);
+				listSpriteRightLegs [1].gameObject.SetActive (true);
+			}
+			break;
+		}
+	}
 
     Clothes PickClothesFromList(List<Clothes> clothesList)
     {
@@ -160,9 +257,9 @@ public class PlayerManager: MonoBehaviour, EventDispatcher.IEventListener
     void UpdateLifepoints()
     {
         // Si période d'accalmie, la vie ne bouge pas.
-        //if (WeatherVariation.instance.state == WeatherVariation.State.RESPITE) return; 
+        if (_weather.state == WeatherVariation.State.RESPITE) return; 
 
-        int temperature = (int) WeatherVariation.instance.weatherIndex;
+        int temperature = (int)_weather.weatherIndex;
         int ecartTemperatureVetement = Mathf.Abs(temperature - clothesList.Count);
         float facteurDegats = temperature > 3 ? GameManager.instance.baseHeatDamage : GameManager.instance.baseColdDamage;
         float damage = facteurDegats * ecartTemperatureVetement * Time.deltaTime;
@@ -187,7 +284,7 @@ public class PlayerManager: MonoBehaviour, EventDispatcher.IEventListener
     {
         deathTriggered = true;
         AudioClip clip;
-        if ((int)WeatherVariation.instance.weatherIndex < 3)
+        if ((int)_weather.weatherIndex < 3)
         {
             clip = AudioClipManager.instance.GetPlayerDeathByHot(); 
         }

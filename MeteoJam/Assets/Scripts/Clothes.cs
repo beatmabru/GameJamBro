@@ -6,13 +6,16 @@ public class Clothes : MonoBehaviour {
     private Rigidbody2D _rigidBody;
     private BoxCollider2D _hitboxDetection;
     private ClothesDetection _clothesDetection;
+	//[HideInInspector]
+	public string clotheName;
 
     public enum ClothesType
     {
         HEAD,
-        NECK,
+        ACCESSORY,
         BODY,
-        LEG
+        LEG,
+		COUNT
     }
 
     public ClothesType type; 

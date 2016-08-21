@@ -9,44 +9,67 @@ public class PlayerHud : MonoBehaviour
     [SerializeField]
     private Image _gauge;
 
+    private WeatherVariation _weather;
+    private Forecaster _forecast;
+
+    void Awake()
+    {
+        GameObject variationHolder = GameObject.Find("WeatherManager");
+        Debug.Assert(variationHolder != null);
+        _weather = variationHolder.GetComponent<WeatherVariation>();
+        _forecast = variationHolder.GetComponent<Forecaster>();
+    }
+
     // Update is called once per frame
     public void UpdateHud (int clothes, float lifePoints)
     {
-        _clothCount.text = clothes + " / " +(int) WeatherVariation.instance.weatherIndex;
+        if(_weather.state==WeatherVariation.State.WEATHER)
+        {
+            _clothCount.text = clothes + " / " + (int)_weather.weatherIndex;
+        }
+        else
+        {
+            _clothCount.text = clothes + " / " + +(int)_forecast.forecast + "?";
+        }
+
         float newScaleX = lifePoints / 100  ;
         _gauge.transform.localScale = new Vector3(newScaleX, 1, 1);
     }
 
+    //lifebar alpha
+    private static readonly byte alphaLifeBar = 255;
+    private static readonly Color32 lifeUp = new Color32(151, 253, 35, alphaLifeBar);
+    private static readonly Color32 respite = new Color32(180, 220, 180, alphaLifeBar);
+    private static readonly Color32 tooHot = new Color32(211, 47, 47, alphaLifeBar);
+    private static readonly Color32 tooCold = new Color32(25, 118, 210, alphaLifeBar);
+    // private static readonly byte alphaLifeBar = 200;
+
     public void changeColor(int clothes)
     {
-        WeatherVariation.WeatherIndex index = WeatherVariation.instance.weatherIndex;
+        if (_weather.state == WeatherVariation.State.RESPITE)
+        {
+            _gauge.GetComponent<Image>().color = respite;
+            return;
+        }
+
+        WeatherVariation.WeatherIndex index = _weather.weatherIndex;
         Color32 color;
+
         if (WeatherVariation.WeatherIndex.PERFECT == index)
         {
             if(clothes >= 1 && clothes <= 5)
-                //life up
-                color = new Color32(139, 195, 74, 180);
+                color = lifeUp;
             else
-                //stable
-                color = new Color32(255, 255, 255, 180);
+                color = respite;
         }
         else
         {
             if (clothes < (int)index)
-            {
-                //trop froid
-                color = new Color32(25, 118, 210, 180);
-            }
+                color = tooCold;
             else if (clothes == (int)index)
-            {
-                //stable
-                color = new Color32(255, 255, 255, 180);
-            }
+                color = respite;
             else
-            {
-                //trop chaud
-                color = new Color32(211, 47, 47, 180);
-            }
+                color = tooHot;
         }
         
         _gauge.GetComponent<Image>().color = color;

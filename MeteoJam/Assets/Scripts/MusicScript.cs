@@ -7,7 +7,19 @@ public class MusicScript : MonoBehaviour {
     public AudioSource musicHot;
     public AudioSource musicCold;
 
+
     float maxVolume = 0.3f;
+
+
+    private WeatherVariation _weather;
+    void Awake()
+    {
+        GameObject variationHolder = GameObject.Find("WeatherManager");
+        Debug.Assert(variationHolder != null);
+        _weather = variationHolder.GetComponent<WeatherVariation>();
+    }
+
+
 	// Use this for initialization
 	void Start () {
         musicNeutre.Play();
@@ -21,13 +33,12 @@ public class MusicScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if((int)WeatherVariation.instance.weatherIndex  < 3)
+        if((int)_weather.weatherIndex  < 3)
         {
-
             StartCoroutine(fadeInTransition(musicHot));
             StartCoroutine(fadeOutTransition(musicCold));
         }
-        else if((int)WeatherVariation.instance.weatherIndex == 3)
+        else if((int)_weather.weatherIndex == 3)
         {
             StartCoroutine(fadeOutTransition(musicHot));
             StartCoroutine(fadeOutTransition(musicCold));
