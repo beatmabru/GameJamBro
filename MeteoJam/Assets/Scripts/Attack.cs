@@ -22,11 +22,25 @@ public class Attack : MonoBehaviour
         }
 	}
 
+    // FIXME : tentative de gérer les backstabs avec
+    // if (col.tag == "HitBoxAttack")
+    // mais sans succès... à creuser (ou à faire autrement).
     void OnTriggerEnter2D(Collider2D col)
     {
-        if(col.tag == "Player")
+        if (col.tag == "Player")
         {
-            _attacker.PushPlayer(col.GetComponent<PlayerManager>());
+            // Si le joueur adverse n'est pas en train de push face à son attaquant
+            PlayerManager attackedPlayer = col.GetComponent<PlayerManager>();
+            if (!attackedPlayer._attackHitbox.activeSelf)
+            {
+                _attacker.PushPlayer(attackedPlayer, true);
+            }
+            // Sinon, les deux joueurs trébuchent, sans déclencher de perte de vêtement.
+            else
+            {
+                _attacker.PushPlayer(col.GetComponent<PlayerManager>(), false);
+                attackedPlayer.PushPlayer(_attacker, false);
+            }
         }
     }
 }
