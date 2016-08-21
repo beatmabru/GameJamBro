@@ -9,7 +9,8 @@ public class IngameManager : MonoBehaviour {
     public static IngameManager instance;
 
     private List<GameObject> players = new List<GameObject>();
-    public Text winText ;
+    public Text winText;
+    public Text gameTimeText;
     public bool gameOver;
     float timerSurviveAlone;
     bool surviveAloneStarted = false;
@@ -18,6 +19,7 @@ public class IngameManager : MonoBehaviour {
 	void Start () {
         instance = this;
         winText.gameObject.SetActive(false);
+        gameTimeText.gameObject.SetActive(false);
         gameTime = 0f;
         for (int i = 1; i < 5; i++)
         {
@@ -59,12 +61,18 @@ public class IngameManager : MonoBehaviour {
                 gameOver = true;
                 winText.text = "Congratulations " + alivePlayers[0].name;
                 winText.gameObject.SetActive(true);
+
+                gameTimeText.text = "You survived for "+gameTime+" seconds.";
+                gameTimeText.gameObject.SetActive(true);
             }
             else if (alivePlayers.Count == 0)
             {
                 gameOver = true;
                 winText.text = "Sadness and Sorrow ";
                 winText.gameObject.SetActive(true);
+
+                gameTimeText.text = "You've played for " + gameTime + " seconds.";
+                gameTimeText.gameObject.SetActive(true);
             }
         }
 	}
