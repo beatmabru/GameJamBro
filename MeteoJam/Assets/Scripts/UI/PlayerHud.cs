@@ -38,9 +38,8 @@ public class PlayerHud : MonoBehaviour
 
     //lifebar alpha
     private static readonly byte alphaLifeBar = 255;
-    private static readonly Color32 lifeUp = new Color32(139, 195, 74, alphaLifeBar);
-    private static readonly Color32 lifeStill = new Color32(255, 255, 255, alphaLifeBar);
-    private static readonly Color32 respite = new Color32(180, 180, 180, alphaLifeBar);
+    private static readonly Color32 lifeUp = new Color32(151, 253, 35, alphaLifeBar);
+    private static readonly Color32 respite = new Color32(180, 220, 180, alphaLifeBar);
     private static readonly Color32 tooHot = new Color32(211, 47, 47, alphaLifeBar);
     private static readonly Color32 tooCold = new Color32(25, 118, 210, alphaLifeBar);
     // private static readonly byte alphaLifeBar = 200;
@@ -61,14 +60,14 @@ public class PlayerHud : MonoBehaviour
             if(clothes >= 1 && clothes <= 5)
                 color = lifeUp;
             else
-                color = lifeStill;
+                color = respite;
         }
         else
         {
             if (clothes < (int)index)
                 color = tooCold;
             else if (clothes == (int)index)
-                color = lifeStill;
+                color = respite;
             else
                 color = tooHot;
         }
