@@ -284,6 +284,9 @@ public class PlayerManager: MonoBehaviour, EventDispatcher.IEventListener
     IEnumerator Die()
     {
         deathTriggered = true;
+        EventDispatcher.Event playerDeath = new EventDispatcher.Event(EventDispatcher.EventId.PLAYER_DEATH, this);
+        EventDispatcher.instance.ThrowEvent(playerDeath);
+
         AudioClip clip;
         if ((int)_weather.weatherIndex < 3)
         {

@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 
-public class WeatherVariation : MonoBehaviour
+public class WeatherVariation : MonoBehaviour, EventDispatcher.IEventListener
 {
     private Forecaster _forecast;
     public Text weatherText;
@@ -26,6 +26,7 @@ public class WeatherVariation : MonoBehaviour
     public float absoluteZeroUnlockDuration = 40f;
 
     public uint weatherDelta = 2u;
+    private uint playerDeaths = 0u;
 
     public enum WeatherIndex
     {
@@ -44,12 +45,14 @@ public class WeatherVariation : MonoBehaviour
     void Awake()
     {
         _forecast = GetComponent<Forecaster>();
+        EventDispatcher.instance.listeners.Add(this);
     }
         
 
     // Use this for initialization
     void Start()
     {
+        playerDeaths = 0u;
         weatherIndex = WeatherIndex.PERFECT;
         _forecast.forecastText.gameObject.SetActive(true);
         weatherText.gameObject.SetActive(false);
@@ -67,8 +70,6 @@ public class WeatherVariation : MonoBehaviour
         {
             ChangeState();
         }
-//         PickNextWeather();
-//         Debug.Log("Current Weather:" + (int)weatherIndex);
     }
 
     private void ChangeState()
@@ -101,28 +102,20 @@ public class WeatherVariation : MonoBehaviour
         PickNextWeather();
     }
 
-    /*
-    void OnGUI()
-    {
-        GUI.Label(new Rect(10, 30, 200, 20), "Current Weather:" + weatherIndex.ToString());
-    }
-    */
-
     // Checks conditions for unlocking weather indexes
     void TryUnlock()
     {
-        //TODO: handle deaths of players to unlock indexes sooner
-
         if (weatherMax == WeatherIndex.ABSOLUTE_ZERO)
             return;
 
-        if (IngameManager.instance.gameTime >= absoluteZeroUnlockDuration)
+        if (IngameManager.instance.gameTime >= absoluteZeroUnlockDuration || playerDeaths >= 2u)
         {
             weatherMax = WeatherIndex.ABSOLUTE_ZERO;
             return;
         }
 
-        if (weatherMax != WeatherIndex.FREEZING && IngameManager.instance.gameTime >= freezingUnlockDuration)
+        if (weatherMax != WeatherIndex.FREEZING 
+            && (IngameManager.instance.gameTime >= freezingUnlockDuration || playerDeaths >= 1u))
             weatherMax = WeatherIndex.FREEZING;
     }
 
@@ -150,5 +143,15 @@ public class WeatherVariation : MonoBehaviour
         weatherText.text = "The current weather is : " + weatherIndex;
 
         _forecast.ComputeForecast();
+    }
+
+    public bool HandleEvent(EventDispatcher.Event e)
+    {
+        if(e.id == EventDispatcher.EventId.PLAYER_DEATH)
+        {
+            ++playerDeaths;
+            TryUnlock();
+        }
+        return false;
     }
 }
