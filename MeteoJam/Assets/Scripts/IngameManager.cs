@@ -54,8 +54,10 @@ public class IngameManager : MonoBehaviour {
             timerSurviveAlone += Time.deltaTime;
             if(timerSurviveAlone > GameManager.instance.timeSurviveAlone && alivePlayers.Count == 1)
             {
-                alivePlayers[0].GetComponent<PlayerManager>().VoiceSource.clip = AudioClipManager.instance.GetPlayerWin();
-                alivePlayers[0].GetComponent<PlayerManager>().VoiceSource.Play();
+                PlayerManager winner = alivePlayers[0].GetComponent<PlayerManager>();
+                winner.VoiceSource.clip = AudioClipManager.instance.GetPlayerWin();
+                winner.VoiceSource.Play();
+                winner.LaunchWinAnimation();
                 gameOver = true;
                 winText.text = "Congratulations " + alivePlayers[0].name;
                 winText.gameObject.SetActive(true);
@@ -71,7 +73,9 @@ public class IngameManager : MonoBehaviour {
 
     void OnGUI()
     {
-        GUI.Label(new Rect(100, 20, 100, 20), gameTime.ToString());
+        GUIStyle ballRun = new GUIStyle();
+        ballRun.normal.textColor = Color.black;
+        GUI.Label(new Rect(50, 10, 100, 20), gameTime.ToString(), ballRun);
     }
 
    

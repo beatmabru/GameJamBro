@@ -22,6 +22,7 @@ public class PlayerManager: MonoBehaviour, EventDispatcher.IEventListener
 
     public AudioSource VoiceSource;
     public AudioSource SFXSource;
+    private Animator _playerAnimator;
 
     // Use this for initialization
     void Start () {
@@ -33,7 +34,7 @@ public class PlayerManager: MonoBehaviour, EventDispatcher.IEventListener
         movePlayer = GetComponentInParent<MovePlayer>();
         SetFirstClothes();
         lifePoints = GameManager.instance.baseLifepoints;
-        
+        _playerAnimator = GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -44,7 +45,9 @@ public class PlayerManager: MonoBehaviour, EventDispatcher.IEventListener
         UpdateHud();
 
         // Throw : lancer un vêtement
-        if (Input.GetButtonDown("Throw" + playerIndex) && clothesList.Count > 0 && canThrow) {
+        if (Input.GetButtonDown("Throw" + playerIndex) && clothesList.Count > 0 && canThrow)
+        {
+            _playerAnimator.SetTrigger("Throw");
             Clothes thrownClothes = PickClothesFromList(clothesList);
             EventDispatcher.Event throwClothes = new EventDispatcher.Event(EventDispatcher.EventId.CLOTHES_THROW, this);
             EventDispatcher.instance.ThrowEvent(throwClothes);
@@ -112,6 +115,9 @@ public class PlayerManager: MonoBehaviour, EventDispatcher.IEventListener
         clothes.gameObject.SetActive(false);
         clothesList.Add(clothes);
 
+        _playerAnimator = GetComponent<Animator>();
+        _playerAnimator.SetTrigger("Dress");
+
         EventDispatcher.Event getClothes = new EventDispatcher.Event(EventDispatcher.EventId.CLOTHES_GET, null);
         EventDispatcher.instance.ThrowEvent(getClothes);
     }
@@ -133,6 +139,7 @@ public class PlayerManager: MonoBehaviour, EventDispatcher.IEventListener
     {
         VoiceSource.clip = AudioClipManager.instance.GetPlayerPush();
         VoiceSource.Play();
+        _playerAnimator.SetTrigger("Push");
         _attackHitbox.SetActive(true);
     }
 
@@ -185,7 +192,7 @@ public class PlayerManager: MonoBehaviour, EventDispatcher.IEventListener
             ClothesFly(clothes, GameManager.instance.pushClothesOrientation, GameManager.instance.pushClothesForce,(i%2 == 0));
             yield return new WaitForSeconds(0.2f);
         }
-        GetComponent<SpriteRenderer>().enabled = false;
+        _playerAnimator.SetTrigger("Death");
         hud.gameObject.SetActive(false);
         while (VoiceSource.isPlaying)
             yield return new WaitForEndOfFrame();
@@ -278,5 +285,10 @@ public class PlayerManager: MonoBehaviour, EventDispatcher.IEventListener
         }
 
         return false;
+    }
+
+    public void LaunchWinAnimation()
+    {
+        _playerAnimator.SetTrigger("Win");
     }
 }
